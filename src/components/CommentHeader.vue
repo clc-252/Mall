@@ -6,8 +6,8 @@
         <span>品优购欢迎您！</span>
         <ul class="nav-r">
           <li>
-            <a href="#">您好，请登录</a> &nbsp;
-            <a href="#" class="red">免费注册</a>
+            <a href="http://localhost:8080/#/front/login">您好，请登录</a> &nbsp;
+            <a href="http://localhost:8080/#/front/register" class="red" target="_blank">免费注册</a>
           </li>
           <li class="spacer"></li>
           <li>
@@ -131,7 +131,7 @@
         <div class="searchArea">
           <!-- 搜索框 -->
           <div class="search">
-            <el-input placeholder="请输入内容" class="input-with-select">
+            <el-input placeholder="请输入内容" class="input-with-select" v-model="keyword">
               <el-button slot="append" icon="el-icon-search"></el-button>
             </el-input>
           </div>
@@ -179,17 +179,33 @@
             购物车中还没有商品，赶紧选购吧！
           </div>
         </div>
-        <!--  -->
+        <!-- 推荐搜索导航 -->
         <div class="navitems">
           <ul class="navitems_group1">
-            <li><a href="#" style="color:red">秒杀</a></li>
-            <li><a href="#" style="color:red">优惠券</a></li>
-            <li><a href="#">品牌闪购</a></li>
-            <li><a href="#">服装城</a></li>
-            <li><a href="#">美妆馆</a></li>
-            <li><a href="#">品优超市</a></li>
-            <li><a href="#">品优家电</a></li>
-            <li><a href="#">品优国际</a></li>
+            <li>
+              <a href="#" style="color:#e1251b;font-weight:700;">秒杀</a>
+            </li>
+            <li>
+              <a href="#" style="color:#e1251b;font-weight:700;">优惠券</a>
+            </li>
+            <li>
+              <a href="#">品牌闪购</a>
+            </li>
+            <li>
+              <a href="#">服装城</a>
+            </li>
+            <li>
+              <a href="#">美妆馆</a>
+            </li>
+            <li>
+              <a href="#">品优超市</a>
+            </li>
+            <li>
+              <a href="#">品优家电</a>
+            </li>
+            <li>
+              <a href="#">品优国际</a>
+            </li>
           </ul>
         </div>
       </div>
@@ -198,7 +214,13 @@
 </template>
 
 <script>
-export default {}
+export default {
+  data () {
+    return {
+      keyword: ''
+    }
+  }
+}
 </script>
 
 <style lang='less' scoped>
@@ -225,10 +247,12 @@ export default {}
       li.mylist {
         padding: 0 5px;
         position: relative;
+        width: 88px;
+        height: 30px;
         &:hover {
           background-color: #fff;
           border: 1px solid #ccc;
-          border-bottom: none;
+          border-bottom-color: #fff;
           > .my {
             display: block;
           }
@@ -237,7 +261,7 @@ export default {}
       .my {
         display: none;
         position: absolute;
-        top: 30px;
+        top: 28px;
         right: -1px;
         z-index: 15;
         padding: 10px 0 10px 15px;
@@ -352,7 +376,7 @@ export default {}
   // 购物车
   .shopcar {
     float: right;
-    margin-top: 30px;
+    margin-top: 32px;
     .car {
       position: relative;
       z-index: 11;
@@ -412,23 +436,32 @@ export default {}
         background-image: url(//img11.360buyimg.com/uba/jfs/t3571/299/131233948/1117/a1196554/58004d6dN2927f0f7.png);
         vertical-align: middle;
       }
+      &:hover {
+        display: block;
+      }
+    }
+    .shopcarlist:hover + .car {
+      border-color: #c81623;
+      border-bottom-color: #fff;
     }
   }
   //
-  .navitems{
-    // float: left;
+  .navitems {
     position: absolute;
     top: 90px;
     left: 350px;
     height: 40px;
     padding-top: 15px;
     line-height: 40px;
-    .navitems_group1 li{
+    .navitems_group1 li {
       float: left;
       padding: 0 20px;
-      a{
+      a {
         font-size: 15px;
         color: #666;
+        &:hover {
+          color: #e1251b;
+        }
       }
     }
   }

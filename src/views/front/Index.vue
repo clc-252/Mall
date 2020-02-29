@@ -767,14 +767,10 @@
                   <img src="../../assets/front/banner2.png" class="d-block w-100" alt="..." />
                 </div>
                 <div class="carousel-item">
-                  <img src="../../assets/front/banner3.png" class="d-block w-100" alt="..." />
+                  <img src="../../assets/front/banner3.jpg" class="d-block w-100" alt="..." />
                 </div>
                 <div class="carousel-item">
-                  <img
-                    src="//img30.360buyimg.com/pop/s590x470_jfs/t1/96929/20/10702/69809/5e23b7ddEf43739c1/d02528c402c8f21f.jpg.webp"
-                    class="d-block w-100"
-                    alt="..."
-                  />
+                  <img src="../../assets/front/banner4.png" class="d-block w-100" alt="..." />
                 </div>
                 <div class="carousel-item">
                   <img
@@ -1008,14 +1004,14 @@
       <div class="special_inner w clearfix">
         <!-- 每日特价 -->
         <div class="daily_special" style="margin-right:5px;">
-          <div class="daily_special_hd">
+          <div class="daily_special_hd module_hd">
             <a
-              class="daily_spec_hd_lk"
+              class="daily_spec_hd_lk module_hd_lk"
               href="//miaosha.jd.com/specialpricelist.html"
               target="_blank"
             >
-              <h3 class="daily_spec_title">每日特价</h3>
-              <i class="el-icon-arrow-right"></i>
+              <h3 class="module_title">每日特价</h3>
+              <i class="el-icon-arrow-right module_icon"></i>
             </a>
           </div>
           <div class="daily_special_bd">
@@ -1067,10 +1063,10 @@
         </div>
         <!-- 品牌闪购 -->
         <div class="lightning_buy">
-          <div class="buy_hd">
-            <a class="buy_hd_lk" href="//red.jd.com" target="_blank">
-              <h3 class="buy_tit">品牌闪购</h3>
-              <i class="el-icon-arrow-right"></i>
+          <div class="buy_hd module_hd">
+            <a class="buy_hd_lk module_hd_lk" href="//red.jd.com" target="_blank">
+              <h3 class="module_title">品牌闪购</h3>
+              <i class="el-icon-arrow-right module_icon"></i>
             </a>
           </div>
           <div class="buy_bd">
@@ -1119,8 +1115,216 @@
         </div>
         <!-- 好货推荐(向左无缝滚动图) -->
         <div class="nice_goods_recommends">
-          <div class="goods_list"></div>
+          <div class="goods_list">
+            <superslide :options="options" class="slideBox">
+              <!-- slides -->
+              <div class="bd">
+                <ul>
+                  <li v-for="(item,index) in goodsList" :key="index">
+                    <a href="javascript:;">
+                      <img :src="item.imgSrc" />
+                      <p>{{item.niceGoodsTitle}}</p>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+              <!-- slot="prev" -->
+              <a class="prev" href="javascript:void(0)" slot="prev"></a>
+              <!-- slot="next" -->
+              <a class="next" href="javascript:void(0)" slot="next"></a>
+            </superslide>
+          </div>
         </div>
+      </div>
+    </div>
+    <!-- 优选区 -->
+    <div class="optimization clearfix">
+      <div class="optim_inner w">
+        <!-- 新品首发 -->
+        <div class="newArrival">
+          <!-- 头部标题 -->
+          <div class="new_hd module_hd">
+            <a
+              class="new_hd_lk module_hd_lk"
+              href="//pro.jd.com/mall/active/2wzwK8McFT97vUgCXKwuV9Pr133m/index.html"
+              target="_blank"
+            >
+              <h3 class="module_title">新品首发</h3>
+              <i class="el-icon-arrow-right module_icon"></i>
+            </a>
+          </div>
+          <!-- 新品列表 -->
+          <div class="new_bd">
+            <!--  arrow="never": 将左右按钮隐藏 -->
+            <el-carousel :interval="4000" type="card" arrow="never">
+              <el-carousel-item v-for="(item,index) in newArrivalList" :key="index">
+                <a href="#">
+                  <img :src="item.imgSrc" alt />
+                  <div class="new_msg">
+                    <h4>{{item.title}}</h4>
+                    <p class="new_desc">{{item.desc}}</p>
+                    <span class="new_price">￥{{item.price}}起</span>
+                  </div>
+                </a>
+              </el-carousel-item>
+            </el-carousel>
+          </div>
+        </div>
+        <!-- 排行榜 -->
+        <div class="rank">
+          <!-- 头部标题 -->
+          <div class="rank_hd module_hd">
+            <a
+              class="rank_hd_lk module_hd_lk"
+              href="//pro.jd.com/mall/active/2wzwK8McFT97vUgCXKwuV9Pr133m/index.html"
+              target="_blank"
+            >
+              <h3 class="module_title">排行榜</h3>
+              <i class="el-icon-arrow-right module_icon"></i>
+            </a>
+          </div>
+          <div class="rank_bd">
+            <div class="rank_item" v-for="(item,index) in rankList" :key="index">
+              <a href="#">
+                <div class="rank_icon" v-bind:style="{backgroundImage:'url(' + item.rankBg + ')'}">
+                  <p class="rank_top">TOP</p>
+                  <p class="rank_num">{{item.rankNum}}</p>
+                </div>
+                <div class="rank_goods">
+                  <img :src="item.imgSrc" alt />
+                  <span class="rank_title">{{item.rankTitle}}</span>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+        <!-- 逛好店 -->
+        <div class="niceShop">
+          <!-- 头部标题 -->
+          <div class="niceShop_hd module_hd">
+            <a
+              class="niceShop_hd_lk module_hd_lk"
+              href="//pro.jd.com/mall/active/2wzwK8McFT97vUgCXKwuV9Pr133m/index.html"
+              target="_blank"
+            >
+              <h3 class="module_title">逛好店</h3>
+              <i class="el-icon-arrow-right module_icon"></i>
+            </a>
+          </div>
+          <div class="niceShop_bd">
+            <div class="niceShop_item">
+              <a
+                href="//haodian.jd.com?sid=01380406&amp;shopid=1000000127&amp;skus=100008348542,63133783516,65425884309,64167426135,100010665518,100010817560&amp;source=pcscenes"
+                target="_blank"
+                class="shop-item"
+              >
+                <div class="shop-item_info">
+                  <div class="item-title">Apple产品京东自营旗舰店</div>
+                  <div class="item-tags">
+                    <span class="text-tag text-tag--origin">自营</span>
+                    <span class="text-tag text-tag--theme">潮流3C</span>
+                  </div>
+                  <div class="item-social">1868.7万人关注</div>
+                </div>
+                <img src="../../assets/front/rank_goods1.png" style=" width: 90px;" />
+              </a>
+              <a
+                href="//haodian.jd.com?sid=01380313&amp;shopid=35309&amp;skus=63133783516,100008348542,65425884309,64167426135,100010665518,100010817560&amp;source=pcscenes"
+                target="_blank"
+                class="shop-item"
+              >
+                <div class="shop-item_info">
+                  <div class="item-title">FILA斐乐官方旗舰店</div>
+                  <div class="item-tags">
+                    <span class="text-tag text-tag--theme">随心所动</span>
+                  </div>
+                  <div class="item-social">238.4万人关注</div>
+                </div>
+                <img src="../../assets/front/niceShop.png" style=" width: 90px;" />
+              </a>
+            </div>
+          </div>
+        </div>
+        <!-- 领券中心 -->
+        <div class="coupon">
+          <!-- 头部标题 -->
+          <div class="coupon_hd module_hd">
+            <a
+              class="coupon_hd_lk module_hd_lk"
+              href="//pro.jd.com/mall/active/2wzwK8McFT97vUgCXKwuV9Pr133m/index.html"
+              target="_blank"
+            >
+              <h3 class="module_title">领券中心</h3>
+              <i class="el-icon-arrow-right module_icon"></i>
+            </a>
+          </div>
+          <div class="coupon_bd">
+            <div class="coupon_inner">
+              <div class="coupon_list">
+                <div class="coupon_item" v-for="(item,index) in couponList" :key="index">
+                  <a class="coupon_lk" href="//a.jd.com/?cateId=0" target="_blank">
+                    <div class="coupon_lk_wrap">
+                      <img :src="item.imgSrc" class="lazyimg_img" />
+                      <div class="coupon_info">
+                        <div class="mod_price coupon_price">
+                          <i>¥</i>
+                          <span>{{item.couponPrice}}</span>
+                        </div>
+                        <div class="coupon_limit" style="color:#999;">满1000元可用</div>
+                        <div class="coupon_desc">{{item.couponDesc}}</div>
+                      </div>
+                    </div>&nbsp;
+                    <div class="coupon_more">
+                      <div class="coupon_more_inner">更多好券</div>
+                      <i class="el-icon-arrow-right coupon_more_arrow"></i>
+                    </div>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 频道广场 -->
+    <div class="channels">
+      <div class="w clearfix">
+        <div class="channels_hd">
+          <h3 class="floorhd_tit">频道广场</h3>
+        </div>
+        <div class="channels_bd">
+          <div class="channels_item_big">
+            <a href="//food.jd.com/" target="_blank">
+              <img src="../../assets/front/channels_big_item1.png" />
+            </a>
+          </div>
+          <div class="channels_item_big">
+            <a href="//food.jd.com/" target="_blank">
+              <img src="../../assets/front/channels_big_item2.png" />
+            </a>
+          </div>
+          <div class="channels_item" v-for="(item,index) in channelsList" :key="index">
+            <a href="#">
+              <div class="item_tit">
+                <span class="channels_item_title_main">{{item.channelsTitle}}</span>
+                <span class="channels_item_title_aside">{{item.channelsAside}}</span>
+              </div>
+              <div class="item_img">
+                <img :src="item.imgSrc1" />
+                <img :src="item.imgSrc2" />
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 为你推荐 -->
+    <div class="recommend">
+      <div class="w clearfix">
+        <div class="recom_hd">
+          <h3 class="floorhd_tit">为你推荐</h3>
+        </div>
+        <RecommendGoods></RecommendGoods>
       </div>
     </div>
     <!-- 底部 -->
@@ -1132,13 +1336,14 @@
 // 引入公共部分
 import CommentHeader from '@/components/CommentHeader.vue'
 import CommentFooter from '@/components/CommentFooter.vue'
+// 引入'为你推荐'模块的组件
+import RecommendGoods from '@/components/front/RecommendGoods'
 export default {
+  name: 'slideBox',
   data () {
     return {
       // 改变相关商品类别信息的变量
       changeDisplay: false,
-      // 轮播图数据
-      // swiperList: ['../../assets/front/banner1.jpg']
       // 秒杀专场列表数据
       seckillList: [
         {
@@ -1245,13 +1450,217 @@ export default {
             '//img10.360buyimg.com/deepvisual/s300x150_jfs/t1/108883/11/4765/3971/5e24453aE988120e1/1d520545508aeed1.png!cc_300x150.webp',
           goodsTitle: '闪购美护钜惠购'
         }
+      ],
+      // slides配置
+      options: {
+        mainCell: '.bd ul',
+        autoPlay: true, // 是否自动播放，默认为false
+        /*
+          effect：动画效果
+          [v1.0]
+           - fade：渐显
+           - top：上滚动、left：左滚动
+           - topLoop：上循环滚动、leftLoop：左循环滚动
+           - topMarquee：上无缝循环滚动、 leftMarquee：左无缝循环滚动
+           [v2.0]
+           - fold：淡入淡出
+           [v2.1]
+           - slideDown：下拉效果
+        */
+        effect: 'leftMarquee',
+        vis: 4, // visible，mainCell的可视范围个数，当实际内容个数少于可是个数时，不执行SuperSlide效果
+        interTime: 50 // 毫秒，自动运行事件间隔，当effect为无缝滚动(topMarquee/leftMarquee)时，相当于运行速度
+      },
+      // slides数据
+      goodsList: [
+        {
+          imgSrc: require('@/assets/front/niceGoods1.png'),
+          niceGoodsTitle: '德国进口望远镜'
+        },
+        {
+          imgSrc: require('../../assets/front/niceGoods2.png'),
+          niceGoodsTitle: '闪迪 固态内存盘'
+        },
+        {
+          imgSrc: require('../../assets/front/niceGoods3.png'),
+          niceGoodsTitle: '进口超大混合零食礼包'
+        },
+        {
+          imgSrc: require('../../assets/front/niceGoods5.png'),
+          niceGoodsTitle: '帕拉丁高帮系带帆布鞋'
+        },
+        {
+          imgSrc: require('../../assets/front/niceGoods4.png'),
+          niceGoodsTitle: 'MAC 白桃奶茶色 口红'
+        },
+        {
+          imgSrc: require('../../assets/front/niceGoods6.png'),
+          niceGoodsTitle: '美的 广域控温电烤箱'
+        },
+        {
+          imgSrc: require('../../assets/front/niceGoods8.png'),
+          niceGoodsTitle: 'Justice 板面'
+        },
+        {
+          imgSrc: require('../../assets/front/niceGoods7.png'),
+          niceGoodsTitle: 'TF 滋润显色 口红花礼盒'
+        }
+      ],
+      // 新品首发数据
+      newArrivalList: [
+        {
+          imgSrc: require('../../assets/front/newArrival1.png'),
+          title:
+            '【新品预售】Redmi K30 120Hz流速屏 前置挖孔双摄 6GB+128GB 深海微光 游戏智能手机 小米 红米',
+          desc: '120Hz流速屏',
+          price: '1699.00'
+        },
+        {
+          imgSrc: require('../../assets/front/newArrival2.png'),
+          title:
+            'OPPO Reno3 Pro 一体化双模5G 视频双防抖 骁龙765G 7.7mm轻薄机身 8GB+128GB 日出印象 全网',
+          desc: '视频双防抖',
+          price: '599.00'
+        },
+        {
+          imgSrc: require('../../assets/front/newArrival3.png'),
+          title:
+            '惠普(HP)暗影精灵5 15.6英寸游戏笔记本电脑(i5-9300H 8G 512GSSD GTX1650 4G独显)',
+          desc: '来这里发现更多新品',
+          price: '3999.00'
+        },
+        {
+          imgSrc: require('../../assets/front/newArrival4.png'),
+          title:
+            '任天堂 Nintendo Switch 国行续航加强版 NS家用游戏机 便携掌上游戏机 红蓝主机',
+          desc: '国行来啦',
+          price: '2099.00'
+        }
+      ],
+      // 排行版数据
+      rankList: [
+        {
+          imgSrc: require('../../assets/front/rank_goods1.png'),
+          rankTitle:
+            'Apple iPhone 11 (A2223) 128GB 黑色 移动联通电信4G手机 双卡双待',
+          rankNum: '01',
+          rankBg: require('../../assets/front/rank_bg1.png')
+        },
+        {
+          imgSrc: require('../../assets/front/rank_goods2.png'),
+          rankTitle:
+            '荣耀20S 李现同款 3200万人像超级夜景 4800万超广角AI三摄 麒麟810 全网通版6GB+128GB 蝶羽白',
+          rankNum: '02',
+          rankBg: require('../../assets/front/rank_bg2.png')
+        },
+        {
+          imgSrc: require('../../assets/front/rank_goods3.png'),
+          rankTitle:
+            'Apple iPhone 11 (A2223) 128GB 紫色 移动联通电信4G手机 双卡双待',
+          rankNum: '03',
+          rankBg: require('../../assets/front/rank_bg3.png')
+        }
+      ],
+      // 优惠券数据
+      couponList: [
+        {
+          imgSrc: require('../../assets/front/coupon1.png'),
+          couponPrice: 100,
+          couponDesc: '仅可购买指定Apple智能手表商品'
+        },
+        {
+          imgSrc: require('../../assets/front/coupon2.png'),
+          couponPrice: 100,
+          couponDesc: '仅可购买部分自营华为手机商品'
+        },
+        {
+          imgSrc: require('../../assets/front/coupon3.png'),
+          couponPrice: 100,
+          couponDesc: '仅可购买个人护理部分商品'
+        }
+      ],
+      // 频道广场数据
+      channelsList: [
+        {
+          channelsTitle: '企业购',
+          channelsAside: '一站式企业采购平台',
+          imgSrc1: require('../../assets/front/channels_item_1-1.png'),
+          imgSrc2: require('../../assets/front/channels_item_1-2.png')
+        },
+        {
+          channelsTitle: '京东拼购',
+          channelsAside: '省钱省心',
+          imgSrc1: require('../../assets/front/channels_item_2-1.png'),
+          imgSrc2: require('../../assets/front/channels_item_2-2.png')
+        },
+        {
+          channelsTitle: 'Joy寻宝',
+          channelsAside: '懂你的Joy',
+          imgSrc1: require('../../assets/front/channels_item_3-1.png'),
+          imgSrc2: require('../../assets/front/channels_item_3-2.png')
+        },
+        {
+          channelsTitle: '冰箱洗衣机',
+          channelsAside: '品质生活必备',
+          imgSrc1: require('../../assets/front/channels_item_4-1.png'),
+          imgSrc2: require('../../assets/front/channels_item_4-2.png')
+        },
+        {
+          channelsTitle: '家装城',
+          channelsAside: '用心装好家一站式购齐',
+          imgSrc1: require('../../assets/front/channels_item_5-1.png'),
+          imgSrc2: require('../../assets/front/channels_item_5-2.png')
+        },
+        {
+          channelsTitle: '玩3C',
+          channelsAside: '潮流电子 炫酷来袭',
+          imgSrc1: require('../../assets/front/channels_item_6-1.png'),
+          imgSrc2: require('../../assets/front/channels_item_6-2.png')
+        },
+        {
+          channelsTitle: '家用电器',
+          channelsAside: '买家电 上京东',
+          imgSrc1: require('../../assets/front/channels_item_7-1.png'),
+          imgSrc2: require('../../assets/front/channels_item_7-2.png')
+        },
+        {
+          channelsTitle: '京东时尚',
+          channelsAside: '服饰美妆好物',
+          imgSrc1: require('../../assets/front/channels_item_8-1.png'),
+          imgSrc2: require('../../assets/front/channels_item_8-2.png')
+        },
+        {
+          channelsTitle: '运动城',
+          channelsAside: '生命在于运动',
+          imgSrc1: require('../../assets/front/channels_item_9-1.png'),
+          imgSrc2: require('../../assets/front/channels_item_9-2.png')
+        },
+        {
+          channelsTitle: '厨房电器',
+          channelsAside: '百变厨房大焕新',
+          imgSrc1: require('../../assets/front/channels_item_10-1.png'),
+          imgSrc2: require('../../assets/front/channels_item_10-2.png')
+        },
+        {
+          channelsTitle: '京东手机',
+          channelsAside: '一个极客的诞生',
+          imgSrc1: require('../../assets/front/channels_item_11-1.png'),
+          imgSrc2: require('../../assets/front/channels_item_11-2.png')
+        },
+        {
+          channelsTitle: '新机首发',
+          channelsAside: '有新机更有范',
+          imgSrc1: require('../../assets/front/channels_item_12-1.png'),
+          imgSrc2: require('../../assets/front/channels_item_12-2.png')
+        }
       ]
     }
   },
   // 注册
   components: {
     CommentHeader,
-    CommentFooter
+    CommentFooter,
+    RecommendGoods
   },
   methods: {
     handleMouseover (index) {
@@ -1557,213 +1966,181 @@ export default {
     float: left;
     width: 497px;
     background-color: #fff;
-    .daily_special_hd,
-    .buy_hd {
-      height: 60px;
-      padding: 10px 15px 0;
-      .daily_spec_hd_lk,
-      .buy_hd_lk {
-        display: inline-block;
-        h3 {
-          float: left;
-          font-weight: 700;
-          font-size: 24px;
+  }
+  .daily_special_bd {
+    padding-left: 10px;
+    position: relative;
+    .tab {
+      position: absolute;
+      top: -42px;
+      right: 20px;
+      .tab_head {
+        float: left;
+        margin: 0 14px;
+        a {
+          display: inline-block;
+          font-size: 14px;
+          padding-bottom: 2px;
+          cursor: pointer;
+          line-height: 19px;
+        }
+      }
+    }
+    .special_item_first {
+      position: relative;
+      float: left;
+      width: 155px;
+      height: 265px;
+      margin-right: 6px;
+      background-color: rgba(109, 126, 146, 0.05);
+      text-align: center;
+      img {
+        width: 130px;
+        margin-top: 40px;
+      }
+      .special_item_msg {
+        padding: 0 6px;
+        .special_item_title {
+          margin: 9px 0 4px 0;
+          height: 19px;
+          line-height: 19px;
+          width: 150px;
+          overflow: hidden;
+          font-size: 14px;
+          text-align: center;
           color: #333;
-          line-height: 32px;
+          &:hover {
+            color: #e1251b;
+          }
         }
         i {
-          margin: 10px 0 0 10px;
-          width: 16px;
-          height: 16px;
-          color: #e1251b;
-          line-height: 16px;
-          // text-align: center;
-          padding-left: 2px;
-          font-size: 12px;
-          font-weight: 700;
-          border: 1px solid #e1251b;
-          border-radius: 50%;
-          &:hover {
-            background-color: #e1251b;
-            color: #fff;
+          position: absolute;
+          top: 0;
+          left: 0;
+          display: block;
+          width: 90px;
+          height: 24px;
+          background-image: linear-gradient(-10deg, #f6e73d, #f7a400);
+          line-height: 24px;
+        }
+        .special_item_price {
+          color: #999;
+          margin-top: 5px;
+          margin-bottom: 10px;
+          .special_price {
+            font-size: 18px;
+            color: #e1251b;
+          }
+          .original_cost {
+            text-decoration: line-through;
           }
         }
       }
     }
-    .daily_special_bd {
-      padding-left: 10px;
-      position: relative;
-      .tab {
-        position: absolute;
-        top: -42px;
-        right: 20px;
-        .tab_head {
-          float: left;
-          margin: 0 14px;
-          a {
-            display: inline-block;
-            font-size: 14px;
-            padding-bottom: 2px;
-            cursor: pointer;
-            line-height: 19px;
-          }
-        }
-      }
-      .special_item_first {
-        position: relative;
-        float: left;
-        width: 155px;
-        height: 265px;
-        margin-right: 6px;
-        background-color: rgba(109, 126, 146, 0.05);
-        text-align: center;
+    .special_item_small {
+      float: left;
+      width: 150px;
+      height: 89px;
+      margin: 18px 0 38px 9px;
+      a {
         img {
-          width: 130px;
-          margin-top: 40px;
+          float: left;
+          width: 80px;
+          height: 80px;
         }
         .special_item_msg {
-          padding: 0 6px;
-          .special_item_title {
-            margin: 9px 0 4px 0;
-            height: 19px;
-            line-height: 19px;
-            width: 150px;
-            overflow: hidden;
-            font-size: 14px;
-            text-align: center;
-            color: #333;
-            &:hover {
-              color: #e1251b;
-            }
-          }
-          i {
-            position: absolute;
-            top: 0;
-            left: 0;
-            display: block;
-            width: 90px;
-            height: 24px;
-            background-image: linear-gradient(-10deg, #f6e73d, #f7a400);
-            line-height: 24px;
-          }
-          .special_item_price {
-            color: #999;
-            margin-top: 5px;
-            margin-bottom: 10px;
-            .special_price {
-              font-size: 18px;
-              color: #e1251b;
-            }
-            .original_cost {
-              text-decoration: line-through;
-            }
-          }
-        }
-      }
-      .special_item_small {
-        float: left;
-        width: 150px;
-        height: 89px;
-        margin: 18px 0 38px 9px;
-        a {
-          img {
-            float: left;
-            width: 80px;
-            height: 80px;
-          }
-          .special_item_msg {
-            float: left;
-            width: 60px;
-            margin-left: 6px;
-            .special_item_title {
-              line-height: 16px;
-              overflow: hidden;
-              text-overflow: ellipsis;
-              display: -webkit-box;
-              -webkit-line-clamp: 2;
-              -webkit-box-orient: vertical;
-            }
-            .special_price {
-              margin-top: 5px;
-              font-size: 14px;
-              color: #e1251b;
-              line-height: 16px;
-            }
-            .original_cost {
-              text-decoration: line-through;
-              color: #999;
-            }
-          }
-        }
-      }
-    }
-    // 品牌闪购
-    .buy_bd {
-      padding: 5px 0 15px 10px;
-      a.goods_first {
-        display: inline-block;
-        width: 240px;
-        height: 265px;
-        background: linear-gradient(
-          180deg,
-          rgba(119, 255, 233, 0.05),
-          rgba(0, 93, 70, 0.05)
-        );
-        text-align: center;
-        img.buy-logo {
-          margin-top: 15px;
-        }
-        h6.buy-name {
-          font-size: 16px;
-          color: #333;
-          font-weight: 700;
-          margin-top: 6px;
-        }
-        .buy-desc {
-          color: #666;
-          margin: 10px 0;
-        }
-        img.buy-goods {
-          width: 130px;
-        }
-      }
-      .goods-others {
-        float: right;
-        width: 240px;
-        .goods-item {
-          position: relative;
           float: left;
-          width: 110px;
-          height: 95px;
-          margin-right: 5px;
-          &:nth-child(2n-1):after {
-            position: absolute;
-            right: 0;
-            top: 10px;
-            content: "";
-            width: 1px;
-            height: 60px;
-            background: linear-gradient(180deg, white, #eeeeee, #eeeeee, white);
+          width: 60px;
+          margin-left: 6px;
+          .special_item_title {
+            line-height: 16px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
           }
-        }
-        .logo {
-          width: 100px;
-          height: 50px;
-          img {
-            width: 100%;
+          .special_price {
+            margin-top: 5px;
+            font-size: 14px;
+            color: #e1251b;
+            line-height: 16px;
           }
-        }
-        h6 {
-          margin-top: 6px;
-          color: #666;
-          text-align: center;
-          font-weight: normal !important;
-          overflow: hidden;
+          .original_cost {
+            text-decoration: line-through;
+            color: #999;
+          }
         }
       }
     }
   }
+  // 品牌闪购
+  .buy_bd {
+    padding: 5px 0 15px 10px;
+    a.goods_first {
+      display: inline-block;
+      width: 240px;
+      height: 265px;
+      background: linear-gradient(
+        180deg,
+        rgba(119, 255, 233, 0.05),
+        rgba(0, 93, 70, 0.05)
+      );
+      text-align: center;
+      img.buy-logo {
+        margin-top: 15px;
+      }
+      h6.buy-name {
+        font-size: 16px;
+        color: #333;
+        font-weight: 700;
+        margin-top: 6px;
+      }
+      .buy-desc {
+        color: #666;
+        margin: 10px 0;
+      }
+      img.buy-goods {
+        width: 130px;
+      }
+    }
+    .goods-others {
+      float: right;
+      width: 240px;
+      .goods-item {
+        position: relative;
+        float: left;
+        width: 110px;
+        height: 95px;
+        margin-right: 5px;
+        &:nth-child(2n-1):after {
+          position: absolute;
+          right: 0;
+          top: 10px;
+          content: "";
+          width: 1px;
+          height: 60px;
+          background: linear-gradient(180deg, white, #eeeeee, #eeeeee, white);
+        }
+      }
+      .logo {
+        width: 100px;
+        height: 50px;
+        img {
+          width: 100%;
+        }
+      }
+      h6 {
+        margin-top: 6px;
+        color: #666;
+        text-align: center;
+        font-weight: normal !important;
+        overflow: hidden;
+      }
+    }
+  }
 }
+
 /* ------------------------------- 发现好货 --------------------------------- */
 .findNiceGoods {
   margin-top: 20px;
@@ -1811,11 +2188,332 @@ export default {
       float: left;
       width: 800px;
       height: 100%;
-      .goods_list{
+      background-color: #fff;
+      .goods_list {
         height: 100%;
-        border:1px solid #000;
+        overflow: hidden;
+        li {
+          float: left;
+          width: 150px;
+          height: 180px;
+          margin: 50px 50px 0 0;
+          position: relative;
+          &:nth-child(2n-1) {
+            img {
+              margin-top: -15px;
+            }
+            p {
+              position: absolute;
+              top: -25px;
+              left: 0;
+              width: 150px;
+            }
+          }
+          &:nth-child(2n) {
+            img {
+              margin-top: 13px;
+            }
+            p {
+              margin-bottom: 10px;
+            }
+          }
+          img {
+            width: 150px;
+            height: 150px;
+          }
+          p {
+            text-align: center;
+            font-size: 14px;
+            color: #333;
+          }
+        }
       }
     }
+  }
+}
+/* --------------------------------- 优选区 -------------------------------- */
+.optimization {
+  margin-top: 20px;
+  // 新品首发、排行榜、逛好店、领券中心公共样式
+  .newArrival,
+  .rank,
+  .niceShop,
+  .coupon {
+    float: left;
+    width: 242px;
+    height: 340px;
+    margin-right: 10px;
+    background-color: #fff;
+  }
+  // 新品首发
+  .newArrival {
+    background: #fff url(../../assets/front/newArrival_bg.png) no-repeat 50%;
+    background-size: cover;
+    height: 340px;
+    .new_bd {
+      height: 100%;
+      overflow: hidden;
+      a {
+        display: inline-block;
+        width: 130px;
+        height: 246px;
+        text-align: center;
+        margin-left: -2px;
+        img {
+          width: 104px;
+          height: 104px;
+          margin-top: 10px;
+        }
+        .new_msg {
+          opacity: 0;
+          color: #999;
+          h4 {
+            margin-top: 30px;
+            margin-bottom: 8px;
+            line-height: 19px;
+            font-size: 14px;
+            font-weight: normal;
+            color: #333;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+          }
+          .new_price {
+            display: inline-block;
+            font-size: 18px;
+            color: #e1251b;
+            margin-top: 20px;
+          }
+        }
+      }
+      .el-carousel {
+        // width: 258px;
+        // height: 300px;
+        .is-active {
+          .new_msg {
+            opacity: 1;
+          }
+        }
+        /deep/.el-carousel__indicators--outside{
+          display: none;
+        }
+      }
+    }
+  }
+  // 排行榜
+  .rank {
+    .rank_bd {
+      padding: 0 8px;
+      .rank_item {
+        margin: 16px 0;
+      }
+      a {
+        .rank_icon {
+          float: left;
+          width: 28px;
+          height: 40px;
+          margin-top: 12px;
+          text-align: center;
+          background-repeat: no-repeat;
+          background-size: contain;
+          .rank_top {
+            color: #b3aea6;
+            margin: 2px 0;
+          }
+          .rank_num {
+            font-size: 16px;
+            color: #fff;
+            font-weight: 600;
+          }
+        }
+        .rank_goods {
+          margin-left: 35px;
+          img {
+            width: 70px;
+            height: 70px;
+          }
+          .rank_title {
+            float: right;
+            display: block;
+            width: 120px;
+            margin-top: 12px;
+            font-size: 14px;
+            color: #333;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+          }
+        }
+      }
+    }
+  }
+  // 逛好店
+  .niceShop {
+    .niceShop_bd {
+      padding: 0 8px;
+      .niceShop_item {
+        height: 128px;
+        a {
+          display: block;
+          width: 228px;
+          height: 128px;
+          padding: 9px;
+          padding-top: 15px;
+          &:first-child {
+            background-color: #f6eeee;
+          }
+          &:last-child {
+            margin-top: 10px;
+            background-color: #ebf2ea;
+          }
+          .shop-item_info {
+            float: left;
+            width: 120px;
+            .item-title {
+              font-size: 14px;
+              color: #333;
+              line-height: 20px;
+              margin-bottom: 5px;
+            }
+            .text-tag {
+              border-radius: 2px;
+              padding: 0 2px;
+              height: 18px;
+              line-height: 17px;
+              margin-right: 5px;
+            }
+            .text-tag--origin {
+              color: #e2231a;
+              border: 1px solid #e2231a;
+            }
+            .text-tag--theme {
+              color: #596fab;
+              border: 1px solid #596fab;
+            }
+            .item-social {
+              margin-top: 18px;
+              color: #999;
+              font-size: 12px;
+            }
+          }
+        }
+      }
+    }
+  }
+  // 领券中心
+  .coupon {
+    margin-right: 0;
+    .coupon_bd {
+      background: url(../../assets/front/coupon_bg.png) no-repeat bottom;
+      background-size: 240px 280px;
+      .coupon_inner {
+        padding: 0 10px;
+        .coupon_list {
+          height: 280px;
+          .coupon_item {
+            height: 80px;
+            padding: 15px 7px;
+            img {
+              float: left;
+              border-radius: 50%;
+              margin: 0 5px;
+            }
+            .coupon_info {
+              float: left;
+              width: 120px;
+              .coupon_price {
+                font-family: impact, sans-serif;
+                height: 34px;
+                line-height: 34px;
+                font-size: 14px;
+                color: #e33333;
+                span {
+                  font-size: 28px;
+                  margin-right: 3px;
+                }
+              }
+              .coupon_desc {
+                font-size: 12px;
+                line-height: 18px;
+                height: 18px;
+                color: #333;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+              }
+            }
+            .coupon_more {
+              position: relative;
+              .coupon_more_inner {
+                display: inline-block;
+                width: 1px;
+                line-height: 15px;
+                vertical-align: middle;
+              }
+              .coupon_more_arrow {
+                position: absolute;
+                right: 0;
+                top: 23px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+/* --------------------------- 频道广场 ----------------------------- */
+.channels {
+  .channels_hd {
+    height: 65px;
+    position: relative;
+  }
+  .channels_bd {
+    .channels_item_big {
+      float: left;
+      margin-right: 10px;
+      margin-bottom: 10px;
+      img {
+        width: 240px;
+        height: 298px;
+      }
+    }
+    .channels_item {
+      float: left;
+      background-color: #fff;
+      margin: 0 10px 10px 0;
+      .item_tit {
+        padding: 14px 0;
+        margin-left: 19px;
+        margin-right: 10px;
+        .channels_item_title_main {
+          font-size: 22px;
+          color: #333;
+          font-weight: 700;
+        }
+        .channels_item_title_aside {
+          font-size: 14px;
+          color: #999;
+          margin-left: 5px;
+        }
+      }
+      .item_img {
+        padding-left: 20px;
+        padding-bottom: 4px;
+        img {
+          width: 90px;
+          margin-right: 20px;
+        }
+      }
+    }
+  }
+}
+/* ----------------------------- 为你推荐 -------------------------------- */
+.recommend {
+  .recom_hd {
+    height: 65px;
+    position: relative;
   }
 }
 
@@ -1823,6 +2521,66 @@ export default {
 .showPop {
   display: block !important;
 }
+// 各商品模块头部标题样式
+.module_hd {
+  height: 60px;
+  padding: 10px 15px 0;
+  .module_hd_lk {
+    display: inline-block;
+    .module_title {
+      float: left;
+      font-weight: 700;
+      font-size: 24px;
+      color: #333;
+      line-height: 32px;
+    }
+    .module_icon {
+      margin: 10px 0 0 10px;
+      width: 16px;
+      height: 16px;
+      color: #e1251b;
+      line-height: 16px;
+      // text-align: center;
+      padding-left: 2px;
+      font-size: 12px;
+      font-weight: 700;
+      border: 1px solid #e1251b;
+      border-radius: 50%;
+    }
+    &:hover .module_icon {
+      background-color: #e1251b;
+      color: #fff;
+    }
+  }
+}
+.floorhd_tit {
+  width: 150px;
+  height: 45px;
+  font-size: 28px;
+  text-align: center;
+  line-height: 45px;
+  margin: 20px auto 0;
+  color: #333;
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    top: 40%;
+    margin-top: -10px;
+    width: 25px;
+    height: 20px;
+    background: url(../../assets/front/floorhd_tit_bg.png) no-repeat;
+  }
+  &::after {
+    right: 40%;
+    background-position: -25px 0;
+  }
+  &:before {
+    left: 40%;
+    background-position: 0 0;
+  }
+}
+
 /*清除浮动*/
 .clearfix:after {
   visibility: hidden;
