@@ -19,6 +19,8 @@
           <a href="#">修改</a>
           <a href="#">退出</a>
         </div>
+        <!-- 底部颜色块 -->
+        <p></p>
       </div>
       <!-- 我的钱包 -->
       <div class="my-wallet">
@@ -69,23 +71,23 @@
         </div>
         <div class="order_bd">
           <div class="order_nav">
-            <a href="#" target="_blank" class="item payment">
+            <a href="javascript:void(0);" target="_self" class="item payment" @click="$router.push({path: 'home/homeordercenter',query:{tabCurrent:1}})">
               <div class="icon-sprite icon1"></div>
               <p class="name">待付款</p>
             </a>
-            <a href="#" target="_blank" class="item sign_for">
+            <a href="javascript:void(0);" target="_self" class="item sign_for" @click="$router.push({path: 'home/homeordercenter',query:{tabCurrent:2}})">
               <div class="icon-sprite icon2"></div>
               <p class="name">待收货</p>
             </a>
-            <a href="#" target="_blank" class="item evaluate">
+            <a href="javascript:void(0);" target="_self" class="item evaluate" @click="$router.push({path: 'home/homeordercenter',query:{tabCurrent:3}})">
               <div class="icon-sprite icon3"></div>
               <p class="name">待评价</p>
             </a>
-            <a href="#" target="_blank" class="item after_sale">
+            <a href="javascript:void(0);" target="_self" class="item after_sale">
               <div class="icon-sprite icon4"></div>
               <p class="name">退换/售后</p>
             </a>
-            <a href="#" target="_blank" class="item all_order">
+            <a href="javascript:void(0);" target="_self" class="item all_order" @click="$router.push({path: 'home/homeordercenter',query:{tabCurrent:0}})">
               <div class="icon-sprite icon5"></div>
               <p class="name">全部订单</p>
             </a>
@@ -318,7 +320,7 @@ export default {
   .user {
     float: left;
     width: 220px;
-    padding: 25px 0;
+    padding: 20px 0 0;
     margin-top: -5px;
     background-color: #e2231a;
     text-align: center;
@@ -330,7 +332,7 @@ export default {
       }
     }
     .username {
-      margin: 15px 0 20px;
+      margin: 15px 0;
       a {
         font-size: 18px;
         font-weight: 700;
@@ -340,12 +342,12 @@ export default {
     .change_info {
       a {
         display: inline-block;
-        padding: 0 14px;
+        padding: 0 15px;
         margin: 0 10px;
-        height: 24px;
+        height: 22px;
         border: 1px solid #fff;
         color: #fff;
-        line-height: 21px;
+        line-height: 20px;
         border-radius: 12px;
         font-size: 14px;
         &:hover {
@@ -353,6 +355,11 @@ export default {
           background-color: #fff;
         }
       }
+    }
+    p{
+      height: 30px;
+      margin-top: 10px;
+      background-color: #232331;
     }
   }
   .my-wallet {

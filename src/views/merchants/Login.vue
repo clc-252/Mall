@@ -8,7 +8,7 @@
           <a class="logo-bd" title="品优购" href="#" target="_blank"></a>
         </div>
         <!-- 欢迎 -->
-        <p>欢迎登陆</p>
+        <p>商家后台 - 欢迎登陆</p>
       </div>
     </div>
     <!-- 中间部分 -->
@@ -44,31 +44,11 @@
                 ></el-input>
               </el-form-item>
               <p class="form-text">
+                <a href="http://localhost:8080/#/front/register" target="_blank" class="fl">没有账号？立即注册</a>
                 <a href="#">忘记密码</a>
               </p>
               <el-button class="submit" type="primary" @click="handleLoginSubmit">登&nbsp;录</el-button>
             </el-form>
-            <div class="otherlogin">
-              <div class="otherlogin_types">
-                <ul>
-                  <li>
-                    <img src="../../assets/front/qq.png" width="35px" height="35px" />
-                  </li>
-                  <li>
-                    <img src="../../assets/front/sina.png" />
-                  </li>
-                  <li>
-                    <img src="../../assets/front/ali.png" />
-                  </li>
-                  <li>
-                    <img src="../../assets/front/weixin.png" />
-                  </li>
-                </ul>
-              </div>
-              <span class="register">
-                <a href="http://localhost:8080/#/front/register" target="_blank">没有账号？立即注册</a>
-              </span>
-            </div>
           </div>
         </el-row>
       </div>
@@ -270,7 +250,7 @@ export default {
         }
         .submit {
           width: 100%;
-          margin-top: 10px;
+          margin-top: 15px;
           font-size: 17px;
           background-color: #e4393c;
           border-color: transparent;
@@ -280,20 +260,6 @@ export default {
         font-size: 14px;
         /deep/.el-input__icon:before {
           font-size: 17px;
-        }
-      }
-      .otherlogin {
-        margin: 20px 25px 0;
-        height: 59px;
-        .otherlogin_types {
-          ul li {
-            float: left;
-            margin-right: 10px;
-          }
-        }
-        .register {
-          float: right;
-          margin-top: 10px;
         }
       }
     }

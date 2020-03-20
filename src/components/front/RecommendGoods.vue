@@ -1,3 +1,4 @@
+// 首页“为你推荐”模块的组件
 <template>
   <!-- 为你推荐模块的组件 -->
   <div class="recommend">

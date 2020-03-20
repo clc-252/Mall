@@ -49,7 +49,7 @@
           <dl class="order_center">
             <dt>订单中心</dt>
             <dd>
-              <a href="javascript:void(0)" @click="$router.push({name: 'HomeOrderCenter'})">我的订单</a>
+              <a href="javascript:void(0)" @click="$router.push({name: 'HomeOrderCenter',params:{tabCurrent:0}})">我的订单</a>
             </dd>
             <dd>
               <a href="#">评价晒单</a>
@@ -59,7 +59,7 @@
           <dl class="attention">
             <dt>我的关注</dt>
             <dd>
-              <a href="#">关注商品</a>
+              <a href="javascript:void(0)" @click="$router.push({name: 'HomeAttention'})">关注商品</a>
             </dd>
             <dd>
               <a href="#">关注店铺</a>
@@ -226,6 +226,7 @@ export default {
         padding: 10px 20px;
         background-color: #fff;
         box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.1);
+        z-index: 2;
         a {
           display: block;
           font-size: 12px;

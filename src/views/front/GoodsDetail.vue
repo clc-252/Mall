@@ -160,6 +160,66 @@
         </div>
       </div>
     </div>
+    <!-- 商品详细信息 -->
+    <div class="goods_info w clearfix">
+      <!-- 左边推荐栏 -->
+      <div class="recom_menus fl">
+        <div class="tab">
+          <ul class="clearfix">
+            <li
+              v-for="(item,index) in ['热销好货','热门关注']"
+              :key="index"
+              class="tab_item fl"
+              :class="{tabActive:currentMenuTab===index}"
+              @click="handleMenuTab(index)"
+            >{{item}}</li>
+          </ul>
+        </div>
+        <!-- 推荐列表 -->
+        <!-- 热销推荐列表 -->
+        <div class="sell_hot">
+          <ul>
+            <li class="sell_hot_item">
+              <a href="#">
+                <img src="@/assets/front/piczoom_big1.jpg" alt />
+                <p class="sellGoods_title">Apple iPhone 11 (A2223) 64GB 黑色 移动联通电信4G手机 双卡双待</p>
+              </a>
+              <p class="clearfix">
+                <span class="sell_num fl">热销698348件</span>
+                <span class="price fr">￥5499.00</span>
+              </p>
+              <i class="rank">1</i>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <!-- 右边商品的详细信息 -->
+      <div class="info_right fl">
+        <!-- tab栏表头 -->
+        <div class="tab info_r_tab clearfix">
+          <ul>
+            <li
+              v-for="(item,index) in ['商品介绍','规格与包装','售后保障','商品评价']"
+              :key="index"
+              class="tab_item fl"
+              :class="{tabActive:currentInfoTab===index}"
+              @click="handleInfoTab(index)"
+            >{{item}}</li>
+          </ul>
+          <!-- 加入购物车按钮 -->
+          <a href="javascript:void(0);" class="btn_addcar fr">加入购物车</a>
+        </div>
+        <!-- 内容 -->
+        <!-- 商品介绍的内容 -->
+        <GoodsIntroduction v-if="currentInfoTab===0" />
+        <!-- 规格与包装 -->
+        <Specifications v-if="currentInfoTab===1" />
+        <!-- 售后保障 -->
+        <AfterSaleProtection v-if="currentInfoTab===2" />
+        <!-- 商品评价 -->
+        <Comment v-if="currentInfoTab===3"/>
+      </div>
+    </div>
     <!-- 底部 -->
     <CommentFooter></CommentFooter>
   </div>
@@ -169,6 +229,14 @@
 // 引入公共部分
 import CommentHeader from '@/components/CommentHeader.vue'
 import CommentFooter from '@/components/CommentFooter.vue'
+// 商品介绍的组件
+import GoodsIntroduction from '@/components/front/GoodsIntroduction'
+// 规格和包装的组件
+import Specifications from '@/components/front/Specifications'
+// 售后保障的组件
+import AfterSaleProtection from '@/components/front/AfterSaleProtection'
+// 商品评价组件
+import Comment from '@/components/front/Comment'
 // 使用放大镜插件
 import PicZoom from 'vue-piczoom'
 export default {
@@ -192,14 +260,22 @@ export default {
       // 当前选择的版本
       currentEdition: 0,
       // 减少按钮当前的状态
-      notAllawed: true
+      notAllawed: true,
+      // 商品详细信息展示部分当前的tab栏
+      currentInfoTab: 0,
+      // 左侧推荐tab栏
+      currentMenuTab: 0
     }
   },
   // 注册
   components: {
     CommentHeader,
     CommentFooter,
-    PicZoom
+    PicZoom,
+    GoodsIntroduction,
+    Specifications,
+    AfterSaleProtection,
+    Comment
   },
   methods: {
     // 鼠标移入修改图片路径
@@ -239,14 +315,26 @@ export default {
         this.goodsNum--
         this.notAllawed = false
       }
+    },
+    // 切换商品详情的tab栏时触发
+    handleInfoTab (index) {
+      this.currentInfoTab = index
+      scrollTo(0, 730)
+    },
+    // 切换左侧推荐的tab栏时触发
+    handleMenuTab (index) {
+      this.currentMenuTab = index
     }
   }
 }
 </script>
 
 <style lang='less' scoped>
+.goodsDetail {
+  background-color: #fff !important;
+}
+// 商品图片价格等信息的展示信息
 .detail_main {
-  background-color: #fff;
   // 面包屑导航
   .el-breadcrumb {
     background-color: #f4f4f4;
@@ -400,7 +488,7 @@ export default {
             padding: 10px 0;
             line-height: 28px;
           }
-          ul{
+          ul {
             width: 520px;
             margin-left: 43px;
           }
@@ -546,7 +634,108 @@ export default {
     }
   }
 }
+// 商品详细信息部分的样式
+.goods_info {
+  margin-top: 30px;
+  // tab栏的共同样式
+  .tab {
+    background-color: #f7f7f7;
+    border: 1px solid #eee;
+    border-bottom: 1px solid #e4393c;
+  }
+  .tab_item {
+    padding: 12px 25px;
+    font-size: 14px;
+    cursor: default;
+    &:hover {
+      color: #e4393c;
+    }
+  }
+  // 当前选中的tab栏样式
+  .tabActive {
+    background-color: #e4393c;
+    color: #fff;
+    &:hover {
+      color: #fff;
+    }
+  }
 
+  // 左边的推荐栏
+  .recom_menus {
+    width: 190px;
+    margin-right: 10px;
+    .tab_item {
+      padding: 12px 19px;
+    }
+    // 热销推荐列表
+    .sell_hot {
+      padding: 20px 10px;
+      border: 1px solid #eee;
+      .sell_hot_item{
+        position: relative;
+        // 排名图标样式
+        .rank{
+          position: absolute;
+          top: -3px;
+          left: -3px;
+          display: inline-block;
+          width: 18px;
+          height: 18px;
+          background-color: #e4393c;
+          border-radius: 50%;
+          text-align: center;
+          line-height: 18px;
+          color: #fff;
+        }
+      }
+      img {
+        width: 140px;
+        height: 140px;
+        margin: 10px 15px;
+      }
+      .sellGoods_title {
+        height: 36px;
+        margin-bottom: 10px;
+        line-height: 18px;
+        overflow: hidden;
+        color: #333;
+        &:hover{
+          color: #e4393c;
+        }
+      }
+      .sell_num {
+        color: #999;
+      }
+      .price {
+        color: #e4393c;
+        font-size: 13px;
+        font-family: Verdana;
+        font-weight: 700;
+      }
+    }
+  }
+  // 右边tab栏
+  .info_r_tab{
+    position: sticky;
+    top:0;
+    z-index: 1;
+  }
+
+  // 右边的商品详细信息介绍
+  .info_right {
+    width: 800px;
+    .btn_addcar {
+      display: inline-block;
+      height: 25px;
+      padding: 0 15px;
+      line-height: 25px;
+      margin-top: 7px;
+      margin-right: 10px;
+      background-color: #e4393c;
+      color: #fff;
+    }
+  }
+}
 /*清除浮动*/
 .clearfix:after {
   visibility: hidden;

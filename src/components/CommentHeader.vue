@@ -15,7 +15,7 @@
           </li>
           <li class="spacer"></li>
           <li class="mylist">
-            <a href="#">
+            <a href="http://localhost:8080/#/front/home">
               我的品优购
               <i class="el-icon-arrow-down"></i>
             </a>
@@ -101,7 +101,7 @@
                     <a href="#">成长中心</a>
                   </li>
                   <li>
-                    <a href="#">商家后台</a>
+                    <a href="http://localhost:8080/#/merchants/login">商家后台</a>
                   </li>
                   <li>
                     <a href="#">商家帮助</a>
@@ -132,7 +132,7 @@
           <!-- 搜索框 -->
           <div class="search">
             <el-input placeholder="请输入内容" class="input-with-select" v-model="keyword">
-              <el-button slot="append" icon="el-icon-search"></el-button>
+              <el-button slot="append" icon="el-icon-search" @click="$router.push({path: '/front/search'})"></el-button>
             </el-input>
           </div>
           <!-- 搜索热门关键词 -->
@@ -169,7 +169,7 @@
         <div class="shopcar">
           <div class="car">
             <i class="el-icon-shopping-cart-2 icon-car"></i>
-            <a href="#" target="_blank" class="mycar">
+            <a href="http://localhost:8080/#/front/cart" target="_blank" class="mycar">
               <span>我的购物车</span>
               <i class="shopnum">0</i>
             </a>
@@ -354,6 +354,9 @@ export default {
         background-color: #e1251b;
         border-radius: 0px;
         border: 0;
+        .el-button{
+          outline: none;
+        }
         .el-icon-search {
           color: #fff;
           font-weight: 700;
@@ -377,6 +380,10 @@ export default {
   .shopcar {
     float: right;
     margin-top: 32px;
+    // hover的时候 改变car的边框颜色
+    &.hover .car{
+      border-color: #c81623;
+    }
     .car {
       position: relative;
       z-index: 11;
@@ -440,10 +447,10 @@ export default {
         display: block;
       }
     }
-    .shopcarlist:hover + .car {
-      border-color: #c81623;
-      border-bottom-color: #fff;
-    }
+    // .shopcarlist:hover + .car {
+    //   border-color: #c81623;
+    //   border-bottom-color: #fff;
+    // }
   }
   //
   .navitems {
