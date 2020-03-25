@@ -39,6 +39,11 @@ import User from '@/views/merchants/User.vue'
 import Seller from '@/views/merchants/Seller.vue'
 // 商家管理后台评论列表页
 import Comment from '@/views/merchants/Comment.vue'
+// 商家管理后台商品列表页
+// 商家管理后台商品列表页
+import GoodsList from '@/views/merchants/GoodsList.vue'
+// 商家管理后台添加商品页面
+import AddGoods from '@/views/merchants/AddGoods.vue'
 // 在vue中使用vue-router
 Vue.use(VueRouter)
 
@@ -147,12 +152,24 @@ let router = new VueRouter({
     // 商家后台管理首页的路由
     {
       name: 'MerchantsIndex',
-      path: '/merchants/index',
+      path: '/merchants/',
       component: MerchantsIndex,
       meta: {
         title: '品优购：商家后台'
       },
       children: [
+        // 商品列表页的路由
+        {
+          name: 'GoodsList',
+          path: 'goodsList',
+          component: GoodsList
+        },
+        // 新增商品的路由
+        {
+          name: 'AddGoods',
+          path: 'addGoods',
+          component: AddGoods
+        },
         // 评论列表页面的路由
         {
           name: 'Comment',

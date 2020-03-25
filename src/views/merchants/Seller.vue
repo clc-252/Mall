@@ -2,7 +2,7 @@
 <template>
   <div class="seller">
     <div class="common_title">
-      <span>商家信息</span>
+      <span>店铺信息</span>
     </div>
     <div class="common_con">
       <!-- 提示 -->

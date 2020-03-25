@@ -34,11 +34,11 @@
               <i class="el-icon-sell"></i>
               <span>商品管理</span>
             </template>
-            <el-menu-item index="/index/postlist">
+            <el-menu-item index="/merchants/goodsList">
               <i class="el-icon-location"></i>
               <span>商品列表</span>
             </el-menu-item>
-            <el-menu-item index="/index/postpublish">
+            <el-menu-item index="/merchants/addGoods">
               <i class="el-icon-location"></i>
               <span>商品发布</span>
             </el-menu-item>
@@ -57,7 +57,7 @@
               <span>退货/售后</span>
             </el-menu-item>
           </el-submenu>
-          <el-menu-item index="/merchants/index/comment">
+          <el-menu-item index="/merchants/comment">
             <i class="el-icon-chat-dot-square"></i>
             <span>评论管理</span>
           </el-menu-item>
@@ -66,11 +66,11 @@
               <i class="el-icon-s-tools"></i>
               <span>设置</span>
             </template>
-            <el-menu-item index="/merchants/index/seller">
+            <el-menu-item index="/merchants/seller">
               <i class="el-icon-location"></i>
               <span>修改资料</span>
             </el-menu-item>
-            <el-menu-item index="/merchants/index/user">
+            <el-menu-item index="/merchants/user">
               <i class="el-icon-location"></i>
               <span>个人中心</span>
             </el-menu-item>
@@ -81,7 +81,6 @@
         <el-header>
           <span class="system-title">品优购商城后台管理系统</span>
           <div class="welcome">
-            <span>欢迎你：用户名</span>
             <div>
               <i class="el-icon-switch-button"></i>
               <span @click="edit" class="edit">退出</span>

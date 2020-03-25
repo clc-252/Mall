@@ -18,16 +18,9 @@
         <el-row type="flex" justify="center" align="middle" class="main">
           <div class="form-wrapper">
             <!-- 表单头部tab -->
-            <el-row type="flex" justify="center" class="tabs">
-              <span
-                :class="{active: currentTab === index}"
-                v-for="(item, index) in [`账户登录`, `扫码登录`]"
-                :key="index"
-                @click="handleChangeTab(index)"
-              >{{item}}</span>
-            </el-row>
+            <div class="tabs">账户登录</div>
             <!-- 登录功能组件 -->
-            <el-form ref="form" :model="form" class="form" :rules="rules" v-if="currentTab == 0">
+            <el-form ref="form" :model="form" class="form" :rules="rules">
               <el-form-item prop="username">
                 <el-input
                   placeholder="邮箱/用户名/手机号"
@@ -111,10 +104,10 @@
           </ul>
           <!-- 版权声明模块 -->
           <p>
-            地址：北京市昌平区建材城西路金燕龙办公楼一层 邮编：100096
-            电话：400-618-4000 传真：010-82935100 邮箱: zhanghj+itcast.cn
+            地址：广州市黄埔区九龙大道206号 邮编：510700
+            电话：020-82876130 班级：2016级计算机科学与技术一班 学号: 201606110052
           </p>
-          <p>京ICP备08001421号京公网安备110108007702</p>
+          <p>粤公网安备 44011602000060号 &nbsp; 粤ICP备15103669号</p>
         </div>
       </div>
     </div>
@@ -142,7 +135,6 @@ export default {
       }
     }
     return {
-      currentTab: 0,
       // 表单数据
       form: {
         username: '',
@@ -159,9 +151,6 @@ export default {
     }
   },
   methods: {
-    handleChangeTab (index) {
-      this.currentTab = index
-    },
     // 处理用户点击登陆按钮之后的登陆事件
     handleLoginSubmit () {
       this.$refs.form.validate(valid => {
@@ -200,12 +189,10 @@ export default {
   }
 }
 // 中间部分
-.banner-box {
-  background-image: linear-gradient(to right, #a51cec, #3f9bfd);
-}
 .banner {
   width: 100%;
-  background: url("../../assets/front/_/login-bg.png") no-repeat 0 -45px;
+  background: url("../../assets/front/shopLogin.jpg") no-repeat 0 -70px;
+  background-size: cover;
   .main {
     width: 1100px;
     height: 100%;
@@ -213,51 +200,48 @@ export default {
     position: relative;
     height: 475px;
     .form-wrapper {
-      width: 400px;
+      width: 350px;
       margin-left: 650px;
-      background: #fff;
+      background: rgba(0, 0, 0, 0.7);
       box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.1);
       overflow: hidden;
       .tabs {
-        span {
           display: block;
-          width: 50%;
-          height: 50px;
-          border-top: 2px #eee solid;
+          height: 60px;
+          border-bottom: 1px #ddd solid;
           background: #eee;
-          line-height: 48px;
+          line-height: 60px;
           text-align: center;
           cursor: pointer;
           color: #666;
           font-size: 18px;
-          &.active {
-            color: #e4393c;
-            border-top-color: #e4393c;
-            background: #fff;
-            font-weight: bold;
-          }
-        }
+          background: rgba(0, 0, 0, 0.1);
       }
       // 登陆组件
       .el-form {
         padding: 40px 20px 20px;
+        // 去注册提示文字
         .form-text {
           font-size: 12px;
           color: #666;
           text-align: right;
-          line-height: 1;
+          line-height: 20px;
           cursor: pointer;
         }
         .submit {
           width: 100%;
-          margin-top: 15px;
+          margin: 20px 0;
           font-size: 17px;
-          background-color: #e4393c;
+          background-color: #2696d5;
           border-color: transparent;
         }
       }
       .el-input {
         font-size: 14px;
+        /deep/.el-input__inner{
+        background: rgba(0, 0, 0, 0.1);
+
+        }
         /deep/.el-input__icon:before {
           font-size: 17px;
         }

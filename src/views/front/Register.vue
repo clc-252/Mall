@@ -30,12 +30,19 @@
             :class="{change_line:changeLine}"
           ></div>
           <div class="pro-step pro-step2 person-pro-step2">
-            <span class="step-index" :class="{change_bgp:changeLine}">2</span>
+            <span
+              class="step-index"
+              :class="{change_bgp:chhangeBgp,change_position_to3:changePosition2To3}"
+            >2</span>
             <p class="step-desc">填写账号信息</p>
           </div>
-          <div class="pro-line pro-line2 person-pro-line person-pro-line2"></div>
+          <!-- 步骤2 -> 步骤三 -->
+          <div
+            class="pro-line pro-line2 person-pro-line person-pro-line2"
+            :class="{change_Line_To3:changeLine2To3}"
+          ></div>
           <div class="pro-step pro-step3 person-pro-step3">
-            <span class="step-index">3</span>
+            <span class="step-index" :class="{change_bgp:changeLine2To3}">3</span>
             <p class="step-desc">注册成功</p>
           </div>
         </div>
@@ -57,6 +64,7 @@
             <!-- 生成验证码 -->
             <div class="code" @click="refreshCode">
               <SIdentify :identifyCode="identifyCode"></SIdentify>
+              <span>看不清？点击照片换一张</span>
             </div>
             <el-button class="nextStep" type="primary" @click="handleNext">下&nbsp;一&nbsp;步</el-button>
           </el-form>
@@ -75,7 +83,17 @@
           <el-button class="signUp" type="primary" @click="handleSignUp">立即注册</el-button>
         </div>
         <!-- 注册成功 -->
-        <div class="register_con register_success"></div>
+        <div class="register_con register_success">
+          <div class="register_tip">
+            <i class="el-icon-circle-check"></i>
+            <p>注册成功</p>
+          </div>
+          <!-- 去登陆 -->
+          <div class="to_login">
+            <i class="el-icon-thumb"></i>
+            <a href="http://localhost:8080/#/front/login">戳这去登录</a>
+          </div>
+        </div>
       </div>
     </div>
     <!-- 底部 -->
@@ -186,11 +204,17 @@ export default {
           // validator:自定义校验函数
           { validator: validatePhoneNum, trigger: 'blur' }
         ],
-        captcha: [{ required: true, message: '验证码不能为空', trigger: 'blur' }]
+        captcha: [
+          { required: true, message: '验证码不能为空', trigger: 'blur' }
+        ]
       },
-      // 修改背景位置的变量
-      changePosition: false,
-      changeLine: false,
+      // 修改背景位置的变量：步骤1 -> 步骤2
+      changePosition: false, // 控制步骤1的背景图片样式变为完成状态
+      changeLine: false, // 控制步骤1 -> 步骤2之间的线
+      chhangeBgp: false, // 控制步骤2的背景图片
+      // 修改背景位置的变量：步骤2 -> 步骤3
+      changePosition2To3: false, // 控制步骤2的背景图片样式变为完成状态
+      changeLine2To3: false, // 控制步骤2 -> 步骤3之间的线
       // 验证码
       identifyCodes: '1234567890',
       identifyCode: ''
@@ -202,15 +226,25 @@ export default {
       if (this.phone_form.captcha === this.identifyCode) {
         window.$('.container_info').show()
         window.$('.container_phone').hide()
+        window.$('.register_success').hide()
         this.changePosition = true
         this.changeLine = true
+        this.chhangeBgp = true
       } else {
         this.$message.error('验证码错误')
         this.refreshCode()
       }
     },
     // 处理注册事件
-    handleSignUp () {},
+    handleSignUp () {
+      // 注册成功的内容显示，其他内容隐藏
+      window.$('.register_success').show()
+      window.$('.container_info').hide()
+      // 修改改变样式的变量
+      this.changePosition2To3 = true
+      this.changeLine2To3 = true
+      this.chhangeBgp = false
+    },
     // 验证码 - 生成随机数字
     randomNum (min, max) {
       return Math.floor(Math.random() * (max - min) + min)
@@ -224,6 +258,7 @@ export default {
       for (let i = 0; i < l; i++) {
         this.identifyCode += this.identifyCodes[this.randomNum(0, this.identifyCodes.length)]
       }
+      // 验证码
       console.log(this.identifyCode)
     }
   },
@@ -231,6 +266,12 @@ export default {
     // this.identifyCode = ''
     // this.makeCode(this.identifyCodes, 4)
     this.refreshCode()
+    // 一开始注册成功样式是隐藏的
+    window.$('.register_success').hide()
+    // 切换样式
+    setInterval(() => {
+      window.$('.el-icon-thumb').toggleClass('iconActive')
+    }, 1000)
   },
   components: {
     SIdentify
@@ -329,16 +370,27 @@ export default {
       font-size: 17px;
       background-color: #e4393c;
       border-color: transparent;
+      outline: none;
     }
   }
+  // 电话部分
   .container_phone {
     // display: none;
     margin-top: 50px;
     .code {
       margin-top: -12px;
       margin-bottom: 5px;
+      display: flex;
+      align-items: flex-end;
+      .s-canvas{
+        vertical-align: middle;
+      }
+      span{
+        margin-left: 10px;
+      }
     }
   }
+  // 用户信息部分
   .container_info {
     display: none;
     .el-input {
@@ -359,12 +411,49 @@ export default {
     }
   }
 
+  // 注册成功
+  .register_success {
+    // 成功提示
+    .register_tip {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      margin-top: 100px;
+      color: #33bb44;
+      font-size: 25px;
+      .el-icon-circle-check {
+        font-size: 40px;
+        margin: 10px 0;
+      }
+    }
+    // 去登录
+    .to_login{
+      float: right;
+      margin-top: 50px;
+      .el-icon-thumb{
+        transform: rotate(90deg);
+        font-size: 20px;
+        &.iconActive{
+          color: #e4393c;
+          font-size: 22px;
+        }
+      }
+      a{
+        margin-left: 10px;
+        font-size: 16px;
+      }
+    }
+  }
+
   // 修改背景图片的样式
-  .change_position {
+  .change_position,
+  .change_position_to3 {
     background-position: 0 0 !important;
     color: transparent !important;
   }
-  .change_line {
+  .change_line,
+  .change_Line_To3 {
     background-position: 0 -130px !important;
   }
   .change_bgp {

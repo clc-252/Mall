@@ -16,10 +16,22 @@
         <el-table-column label="操作" width="100">
           <template>
             <el-button type="text" size="small" @click="handleReply">回复</el-button>
-            <el-button type="text" size="small" @click="handleInfo">详情</el-button>
+            <el-button type="text" size="small" @click="dialogFormVisible=true">详情</el-button>
           </template>
         </el-table-column>
       </el-table>
+      <!-- 评论详情 -->
+      <el-dialog title="评论详情" :visible.sync="dialogFormVisible">
+        <el-form>
+          <el-form-item label="用户名">
+            <el-input :disabled="true" ></el-input>
+          </el-form-item>
+        </el-form>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="dialogFormVisible = false">取 消</el-button>
+          <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+        </div>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -37,33 +49,46 @@ export default {
             '【国行现货4999元起】Apple 苹果 iPhone 11 移动联通电信4G手机 双卡双待 绿色 全网通 (64GB)',
           date: '2016-05-02',
           state: '已回复'
+        },
+        {
+          username: '火星网友',
+          content:
+            '关注很久了，性能不错的一部手机，买回来后直接升级到13.3运行稳定，也没有网上说的发烫问题，估计是冬天吧。拍照效果棒棒哒！很好哦！',
+          goodsTitle:
+            '【国行现货4999元起】Apple 苹果 iPhone 11 移动联通电信4G手机 双卡双待 绿色 全网通 (64GB)',
+          date: '2016-05-02',
+          state: '已回复'
         }
-      ]
+      ],
+      dialogFormVisible: false
     }
   },
   methods: {
     // 点击回复按钮触发
     handleReply () {
-      this.$prompt("回复'火星网友'", '提示', {
+      // 弹框让商家输入回复内容
+      this.$prompt("回复'火星网友'：", '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         inputPattern: /\S/,
-        inputErrorMessage: '回复内容不能为空'
-      }).then(({ value }) => {
-        this.$message({
-          type: 'success',
-          message: '回复成功 '
-        })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消'
-        })
+        inputErrorMessage: '回复内容不能为空',
+        inputPlaceholder: '请输入回复内容'
       })
+        .then(({ value }) => {
+          this.$message({
+            type: 'success',
+            message: '回复成功 '
+          })
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消'
+          })
+        })
     },
     // 点击详情按钮触发
-    handleInfo () {
-    }
+    handleInfo () {}
   }
 }
 </script>
@@ -103,15 +128,18 @@ export default {
       overflow: hidden;
       -webkit-line-clamp: 1;
       -webkit-box-orient: vertical;
+      .el-button {
+        outline: none;
+      }
     }
     .el-table_1_column_5 {
       text-align: center;
     }
     .el-table_1_column_6 {
       text-align: center;
-      .cell .el-button:hover {
-        color: #e1251b;
-      }
+      .cell .el-button :hover {
+          color: #e1251b;
+        }
     }
   }
 }
