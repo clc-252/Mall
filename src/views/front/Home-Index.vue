@@ -7,17 +7,17 @@
         <!-- 头像 -->
         <div class="user_pic">
           <a href="#">
-            <img src="//i.jd.com/commons/img/no-img_mid_.jpg" alt />
+            <img :src="userInfo.userImg" alt />
           </a>
         </div>
         <!-- 用户名 -->
         <div class="username">
-          <a href="#">用户名</a>
+          <a href="javascript:void(0);">{{userInfo.nickName}}</a>
         </div>
         <!-- 修改信息和退出登录 -->
         <div class="change_info">
-          <a href="#">修改</a>
-          <a href="#">退出</a>
+          <a href="http://localhost:8080/#/front/home/homeUser?tabCurrent=0">修改</a>
+          <a href="javascript:void(0);" @click="handleLogOut">退出</a>
         </div>
         <!-- 底部颜色块 -->
         <p></p>
@@ -71,15 +71,30 @@
         </div>
         <div class="order_bd">
           <div class="order_nav">
-            <a href="javascript:void(0);" target="_self" class="item payment" @click="$router.push({path: 'home/homeordercenter',query:{tabCurrent:1}})">
+            <a
+              href="javascript:void(0);"
+              target="_self"
+              class="item payment"
+              @click="$router.push({path: '/front/home/homeordercenter',query:{tabCurrent:1}})"
+            >
               <div class="icon-sprite icon1"></div>
               <p class="name">待付款</p>
             </a>
-            <a href="javascript:void(0);" target="_self" class="item sign_for" @click="$router.push({path: 'home/homeordercenter',query:{tabCurrent:2}})">
+            <a
+              href="javascript:void(0);"
+              target="_self"
+              class="item sign_for"
+              @click="$router.push({path: '/front/home/homeordercenter',query:{tabCurrent:2}})"
+            >
               <div class="icon-sprite icon2"></div>
               <p class="name">待收货</p>
             </a>
-            <a href="javascript:void(0);" target="_self" class="item evaluate" @click="$router.push({path: 'home/homeordercenter',query:{tabCurrent:3}})">
+            <a
+              href="javascript:void(0);"
+              target="_self"
+              class="item evaluate"
+              @click="$router.push({path: '/front/home/homeordercenter',query:{tabCurrent:3}})"
+            >
               <div class="icon-sprite icon3"></div>
               <p class="name">待评价</p>
             </a>
@@ -87,12 +102,30 @@
               <div class="icon-sprite icon4"></div>
               <p class="name">退换/售后</p>
             </a>
-            <a href="javascript:void(0);" target="_self" class="item all_order" @click="$router.push({path: 'home/homeordercenter',query:{tabCurrent:0}})">
+            <a
+              href="javascript:void(0);"
+              target="_self"
+              class="item all_order"
+              @click="$router.push({path: '/front/home/homeordercenter',query:{tabCurrent:0}})"
+            >
               <div class="icon-sprite icon5"></div>
               <p class="name">全部订单</p>
             </a>
           </div>
-          <div class="empty">您买的东西太少了，这里都空空的，快去挑选合适的商品吧！</div>
+          <!-- 当订单为空时 -->
+          <div class="empty" v-if="!orderList.length">您买的东西太少了，这里都空空的，快去挑选合适的商品吧！</div>
+          <!-- 当订单不为空时 -->
+          <div class="orderList" v-if="orderList.length">
+            <div v-for="(item,index) in orderList" :key="index">
+              <div class="order_item" v-for="(value,index) in item.items" :key="index">
+                <img :src="value.coverIcon" alt />
+                <div class="goodsInfo">
+                  <p class="title">{{value.title}}</p>
+                  <p class="creatTime">普通快递 | {{item.createdAt}}</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -275,6 +308,9 @@
 </template>
 
 <script>
+// 引入获取用户信息的方法
+import { getUserInfo } from '@/apis/user.js'
+import { getOrderList } from '@/apis/order.js'
 export default {
   data () {
     return {
@@ -298,7 +334,11 @@ export default {
           secondImgSrc: require('@/assets/front/buy_book2.png'),
           thirdImgSrc: require('@/assets/front/buy_book3.png')
         }
-      ]
+      ],
+      // 用户数据
+      userInfo: {},
+      // 订单数据
+      orderList: []
     }
   },
   methods: {
@@ -306,7 +346,34 @@ export default {
       this.$refs.serviceList.classList.toggle('move')
       this.$refs.firstDots.classList.toggle('slick-active')
       this.$refs.secondDots.classList.toggle('slick-active')
+    },
+    // 退出登陆处理
+    handleLogOut () {
+      this.$confirm('是否确定退出登录', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        // localStorage.removeItem('vuex')
+        this.$store.commit('setUserInfo', {})
+        this.$router.push({ path: '/' })
+      })
     }
+  },
+  async mounted () {
+    let id = this.$store.state.user.userInfo.id
+    let token = this.$store.state.user.userInfo.sessionToken
+    let res = await getUserInfo(id, token)
+    console.log(res)
+    res.data.userImg = '//i.jd.com/commons/img/no-img_mid_.jpg'
+    this.userInfo = res.data
+
+    // 获取订单数据
+    let res2 = await getOrderList(id, token)
+    this.orderList = res2.data.results.splice(0, 3)
+    this.orderList.map(v => {
+      v.createdAt = this.$moment(v.createdAt).format('YYYY-MM-DD hh:mm:ss')
+    })
   }
 }
 </script>
@@ -356,7 +423,7 @@ export default {
         }
       }
     }
-    p{
+    p {
       height: 30px;
       margin-top: 10px;
       background-color: #232331;
@@ -476,6 +543,7 @@ export default {
           }
         }
       }
+      // 没有订单时的布局
       .empty {
         padding: 60px 0 90px;
         color: #999;
@@ -488,6 +556,35 @@ export default {
           margin-right: 20px;
           vertical-align: middle;
           background: url(../../assets/front/sprite.png) no-repeat -430px -95px;
+        }
+      }
+      // 有订单的布局
+      .orderList {
+        padding-bottom: 10px;
+        border-top: 2px solid #eef2ed;
+        .order_item {
+          display: flex;
+          padding: 10px 20px;
+          border-bottom: 2px solid #eef2ed;
+          img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            margin-right: 5px;
+          }
+          .goodsInfo {
+            padding-top: 15px;
+            font-size: 13px;
+            line-height: 20px;
+            .title {
+              width: 410px;
+              display: -webkit-box;
+              text-overflow: ellipsis;
+              overflow: hidden;
+              -webkit-line-clamp: 1;
+              -webkit-box-orient: vertical;
+            }
+          }
         }
       }
     }

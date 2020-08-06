@@ -37,7 +37,7 @@
                 ></el-input>
               </el-form-item>
               <p class="form-text">
-                <a href="http://localhost:8080/#/front/register" target="_blank" class="fl">没有账号？立即注册</a>
+                <a href="#" target="_blank" class="fl">没有账号？立即注册</a>
                 <a href="#">忘记密码</a>
               </p>
               <el-button class="submit" type="primary" @click="handleLoginSubmit">登&nbsp;录</el-button>
@@ -117,23 +117,6 @@
 <script>
 export default {
   data () {
-    /*
-        rule：校验规则
-        value：文本框中的值
-        callback：该函数必须执行，如果校验不通过则传入错误提示信息，通过就不需要传递参数
-    */
-    const validateUsername = (rule, value, callback) => {
-      // 通过value校验到底是否是手机号码, true的话表示通过，false就不通过
-      const isValid = /^1[3,4,5,7,8][0-9]{9}$/.test(value)
-      // 判断输入的手机号码格式是否正确
-      if (value === '') {
-        callback(new Error('请输入手机号'))
-      } else if (!isValid) {
-        callback(new Error('手机号码格式不正确'))
-      } else {
-        callback()
-      }
-    }
     return {
       // 表单数据
       form: {
@@ -144,7 +127,7 @@ export default {
       rules: {
         username: [
           // validator:自定义校验函数
-          { validator: validateUsername, trigger: 'blur' }
+          { required: true, message: '账号不能为空', trigger: 'blur' }
         ],
         password: [{ required: true, message: '密码不能为空', trigger: 'blur' }]
       }
@@ -153,10 +136,13 @@ export default {
   methods: {
     // 处理用户点击登陆按钮之后的登陆事件
     handleLoginSubmit () {
-      this.$refs.form.validate(valid => {
-        // console.log(valid)
-        // 如果结果为true，则发送登陆请求
-      })
+      if (this.form.username === 'admin' && this.form.password === '123456') {
+        this.$message({
+          message: '登录成功',
+          type: 'success'
+        })
+        this.$router.push({ path: '/merchants/' })
+      }
     }
   }
 }

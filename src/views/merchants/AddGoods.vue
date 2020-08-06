@@ -19,13 +19,7 @@
             multiple
             :multiple-limit="3"
           >
-            <el-option label="多选1" value="1"></el-option>
-            <el-option label="多选2" value="2"></el-option>
-            <el-option label="多选3" value="3"></el-option>
-            <el-option label="多选4" value="4"></el-option>
-            <el-option label="多选5" value="5"></el-option>
-            <el-option label="多选6" value="6"></el-option>
-            <el-option label="多选7" value="7"></el-option>
+            <el-option :label="item" :value="item" v-for="(item,index) in cateList" :key="index"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="商品价格">
@@ -50,7 +44,10 @@
             <img width="100%" :src="dialogImageUrl" alt />
           </el-dialog>
         </el-form-item>
-        <el-form-item label="商品介绍"></el-form-item>
+        <el-form-item label="商品介绍">
+          <!-- 使用富文本编辑器 -->
+          <VueEditor :config="config" />
+        </el-form-item>
         <el-form-item label="包装清单">
           <el-input type="textarea" autosize placeholder="请输入商品的包装清单" v-model="form.textarea"></el-input>
         </el-form-item>
@@ -64,6 +61,11 @@
 </template>
 
 <script>
+// 引入富文本编辑器
+import VueEditor from 'vue-word-editor'
+import 'quill/dist/quill.snow.css'
+
+import { getGoodsCate } from '@/apis/goods.js'
 export default {
   data () {
     return {
@@ -74,7 +76,30 @@ export default {
         textarea: ''
       },
       dialogImageUrl: '',
-      dialogVisible: false
+      dialogVisible: false,
+      // 富文本的配置
+      config: {
+        // 上传图片的配置
+        uploadImage: {
+          url: 'http://localhost:3000/upload',
+          name: 'file',
+          // res是结果，insert方法会把内容注入到编辑器中，res.data.url是资源地址
+          uploadSuccess (res, insert) {
+            insert('http://localhost:3000' + res.data.url)
+          }
+        },
+
+        // 上传视频的配置
+        uploadVideo: {
+          url: 'http://localhost:3000/upload',
+          name: 'file',
+          uploadSuccess (res, insert) {
+            insert('http://localhost:3000' + res.data.url)
+          }
+        }
+      },
+      // 分类数据
+      cateList: []
     }
   },
   methods: {
@@ -93,6 +118,16 @@ export default {
       this.dialogVisible = true
     },
     onSubmit () {}
+  },
+  components: {
+    VueEditor
+  },
+  async mounted () {
+    // 获取商品分类列表
+    let res = await getGoodsCate()
+    res.data.results.map(v => {
+      this.cateList.push(v.name)
+    })
   }
 }
 </script>

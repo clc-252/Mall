@@ -20,102 +20,351 @@
           </li>
         </ul>
       </div>
-      <!-- 表头 -->
-      <el-row class="table_title">
-        <el-col :span="12">
-          <span>订单详情</span>
-        </el-col>
-        <el-col :span="3">
-          <span>收货人</span>
-        </el-col>
-        <el-col :span="3">
-          <span>金额</span>
-        </el-col>
-        <el-col :span="3">
-          <span>状态</span>
-        </el-col>
-        <el-col :span="3">
-          <span>操作</span>
-        </el-col>
-      </el-row>
       <!-- 全部订单 -->
-      <div class="all_order">
+      <div v-if="current===0">
         <!-- 表头 -->
-        <div class="all_order_title">
-          <span class="time">2020-02-08 22:05:24</span>
-          <span class="order_num">
-            订单号：
-            <i class="num">111249132617</i>
-          </span>
-          <!-- 删除按钮 -->
-          <i class="el-icon-delete fr" @click="handleDel"></i>
-        </div>
-        <!-- 订单详情 -->
-        <div class="order_info">
-          <el-row class="order_info_container">
-            <el-col :span="12" class="goods_info">
-              <a href="#">
-                <img
-                  src="http://h2.appsimg.com/a.appsimg.com/upload/merchandise/pdcvis/2019/09/19/22/7ddd82fe-5057-4b41-935f-5e2c46e91088_420_531.jpg"
-                  alt
-                />
-                <span class="goods_title">Apple iPhone XS Max (A2104) 256GB 银色 移动联通电信4G手机 双卡双待</span>
-              </a>
-              <!-- 商品数量 -->
-              <span class="goods_num">x1</span>
-            </el-col>
-            <el-col :span="3" class="username">
+        <el-row class="table_title">
+          <el-col :span="12">
+            <span>订单详情</span>
+          </el-col>
+          <el-col :span="3">
+            <span>收货人</span>
+          </el-col>
+          <el-col :span="3">
+            <span>金额</span>
+          </el-col>
+          <el-col :span="3">
+            <span>状态</span>
+          </el-col>
+          <el-col :span="3">
+            <span>操作</span>
+          </el-col>
+        </el-row>
+        <!-- 全部订单 -->
+        <div class="all_order" v-for="(item,index) in orderList" :key="index">
+          <!-- 表头 -->
+          <div class="all_order_title">
+            <span class="time">{{item.createdAt}}</span>
+            <span class="order_num">
+              订单号：
+              <i class="num">{{item.billNum}}</i>
+            </span>
+            <!-- 删除按钮 -->
+            <i class="el-icon-delete fr" @click="handleDel(index)"></i>
+          </div>
+          <!-- 订单详情 -->
+          <div class="order_info">
+            <el-row class="order_info_container" v-for="(value,index) in item.items" :key="index">
+              <el-col :span="12" class="goods_info">
+                <a href="#">
+                  <img :src="value.coverIcon" alt />
+                  <span class="goods_title">{{value.title}}</span>
+                </a>
+                <!-- 商品数量 -->
+                <span class="goods_num">x{{value.count}}</span>
+              </el-col>
               <!-- 收货人 -->
-              <span>用户名</span>
-              <i class="el-icon-user"></i>
+              <el-col :span="3" class="username">
+                <span>{{item.name}}</span>
+              </el-col>
+              <!-- 价格 -->
+              <el-col :span="3" class="price">
+                <p class="unit_price">单价：¥{{value.price}}</p>
+                <p class="all_price">
+                  <span>总额：</span>
+                  ¥{{item.totalPrice}}
+                </p>
+              </el-col>
+              <!-- 订单状态 -->
+              <el-col :span="3" class="status">
+                <!-- 待付款 -->
+                <div v-if="item.status===1">
+                  <p>等待付款</p>
+                  <a href="#">订单详情</a>
+                </div>
+                <!-- 待发货 -->
+                <div v-if="item.status===2">
+                  <p>待发货</p>
+                  <a href="#">订单详情</a>
+                </div>
+                <!-- 待收货 -->
+                <div v-if="item.status===3">
+                  <p>等待收货</p>
+                  <a href="#">订单详情</a>
+                </div>
+                <!-- 待评论 -->
+                <div v-if="item.status===4">
+                  <p>待评论</p>
+                  <a href="#">订单详情</a>
+                </div>
+                <!-- 已完成 -->
+                <div v-if="item.status===5">
+                  <p>已完成</p>
+                  <a href="#">订单详情</a>
+                </div>
+                <!-- 已取消 -->
+                <div v-if="item.status===6">
+                  <p>已取消</p>
+                  <a href="#">订单详情</a>
+                </div>
+              </el-col>
+              <!-- 订单操作 -->
+              <el-col :span="3" class="operation">
+                <!-- 已取消 -->
+                <span class="buy_again" v-if="item.status===6">立即购买</span>
+                <!-- 待付款 -->
+                <div v-if="item.status===1">
+                  <i class="el-icon-time">&nbsp;剩余0时28分</i>
+                  <span class="to_pay">付款</span>
+                  <span>取消订单</span>
+                </div>
+                <!-- 待收货 -->
+                <div v-if="item.status===3">
+                  <span @click="handleConfirm(index)">确认收货</span>
+                  <span style="margin-top:5px">退货申请</span>
+                </div>
+                <!-- 待评价 -->
+                <span class="go_comment" v-if="item.status===4" @click="handleToComment(index)">去评论</span>
+              </el-col>
+            </el-row>
+          </div>
+        </div>
+      </div>
+      <!-- 待付款 -->
+      <div v-if="current===1">
+        <span
+          v-if="!waitPayList.length"
+          style="display:inline-block;font-size:16px;margin:30px auto;"
+        >没有该状态的订单哦~</span>
+        <div v-if="waitPayList.length">
+          <!-- 表头 -->
+          <el-row class="table_title">
+            <el-col :span="12">
+              <span>订单详情</span>
             </el-col>
-            <el-col :span="3" class="price">
-              <p class="unit_price">单价：¥7119</p>
-              <p class="all_price">总额：¥7119</p>
+            <el-col :span="3">
+              <span>收货人</span>
             </el-col>
-            <!-- 全部订单的订单状态 -->
-            <el-col :span="3" class="status" v-if="current===0">
-              <p>已取消</p>
-              <a href="#">订单详情</a>
+            <el-col :span="3">
+              <span>金额</span>
             </el-col>
-            <!-- 待付款的订单状态 -->
-            <el-col :span="3" class="wait_status status" v-if="current===1">
-              <p>等待付款</p>
-              <a href="#">订单详情</a>
+            <el-col :span="3">
+              <span>状态</span>
             </el-col>
-            <!-- 待收货的订单状态 -->
-            <el-col :span="3" class="wait_receive status" v-if="current===2">
-              <p>等待收货</p>
-              <a href="#">订单详情</a>
-            </el-col>
-            <!-- 待评价的订单状态 -->
-            <el-col :span="3" class="status" v-if="current===3">
-              <p>已完成</p>
-              <a href="#">订单详情</a>
-            </el-col>
-            <!-- 全部订单的操作 -->
-            <el-col :span="3" class="operation" v-if="current===0">
-              <!-- 操作 -->
-              <span class="buy_again">立即购买</span>
-            </el-col>
-            <!-- 待付款的订单操作 -->
-            <el-col :span="3" class="wait_operation" v-if="current===1">
-              <!-- 操作 -->
-              <i class="el-icon-time">&nbsp;剩余0时28分</i>
-              <span class="to_pay">付款</span>
-              <span>取消订单</span>
-            </el-col>
-            <!-- 待收货的订单操作 -->
-            <el-col :span="3" class="wait_receive_operation operation" v-if="current===2">
-              <!-- 操作 -->
-              <span>确认收货</span>
-            </el-col>
-            <!-- 待评价的订单操作 -->
-            <el-col :span="3" class="operation" v-if="current===3">
-              <!-- 操作 -->
-              <span class="go_comment">去评论</span>
+            <el-col :span="3">
+              <span>操作</span>
             </el-col>
           </el-row>
+          <div class="all_order" v-for="(item,index) in waitPayList" :key="index">
+            <!-- 表头 -->
+            <div class="all_order_title">
+              <span class="time">{{item.createdAt}}</span>
+              <span class="order_num">
+                订单号：
+                <i class="num">{{item.billNum}}</i>
+              </span>
+              <!-- 删除按钮 -->
+              <i class="el-icon-delete fr" @click="handleDel(index)"></i>
+            </div>
+            <!-- 订单详情 -->
+            <div class="order_info">
+              <el-row class="order_info_container" v-for="(value,index) in item.items" :key="index">
+                <el-col :span="12" class="goods_info">
+                  <a href="#">
+                    <img :src="value.coverIcon" alt />
+                    <span class="goods_title">{{value.title}}</span>
+                  </a>
+                  <!-- 商品数量 -->
+                  <span class="goods_num">x{{value.count}}</span>
+                </el-col>
+                <!-- 收货人 -->
+                <el-col :span="3" class="username">
+                  <span>{{item.name}}</span>
+                </el-col>
+                <!-- 价格 -->
+                <el-col :span="3" class="price">
+                  <p class="unit_price">单价：¥{{value.price}}</p>
+                  <p class="all_price">
+                    <span>总额：</span>
+                    ¥{{item.totalPrice}}
+                  </p>
+                </el-col>
+                <!-- 订单状态 -->
+                <el-col :span="3" class="status">
+                  <!-- 待付款 -->
+                  <div>
+                    <p>等待付款</p>
+                    <a href="#">订单详情</a>
+                  </div>
+                </el-col>
+                <!-- 订单操作 -->
+                <el-col :span="3" class="operation">
+                  <!-- 待付款 -->
+                  <div>
+                    <i class="el-icon-time">&nbsp;剩余0时28分</i>
+                    <span class="to_pay">付款</span>
+                    <span>取消订单</span>
+                  </div>
+                </el-col>
+              </el-row>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 待收货 -->
+      <div v-if="current===2">
+        <span
+          v-if="!waitDelivery.length"
+          style="display:inline-block;font-size:16px;margin:30px auto;"
+        >没有该状态的订单哦~</span>
+        <div v-if="waitDelivery.length">
+          <!-- 表头 -->
+          <el-row class="table_title">
+            <el-col :span="12">
+              <span>订单详情</span>
+            </el-col>
+            <el-col :span="3">
+              <span>收货人</span>
+            </el-col>
+            <el-col :span="3">
+              <span>金额</span>
+            </el-col>
+            <el-col :span="3">
+              <span>状态</span>
+            </el-col>
+            <el-col :span="3">
+              <span>操作</span>
+            </el-col>
+          </el-row>
+          <div class="all_order" v-for="(item,index) in waitDelivery" :key="index">
+            <!-- 表头 -->
+            <div class="all_order_title">
+              <span class="time">{{item.createdAt}}</span>
+              <span class="order_num">
+                订单号：
+                <i class="num">{{item.billNum}}</i>
+              </span>
+              <!-- 删除按钮 -->
+              <i class="el-icon-delete fr" @click="handleDel(index)"></i>
+            </div>
+            <!-- 订单详情 -->
+            <div class="order_info">
+              <el-row class="order_info_container" v-for="(value,index) in item.items" :key="index">
+                <el-col :span="12" class="goods_info">
+                  <a href="#">
+                    <img :src="value.coverIcon" alt />
+                    <span class="goods_title">{{value.title}}</span>
+                  </a>
+                  <!-- 商品数量 -->
+                  <span class="goods_num">x{{value.count}}</span>
+                </el-col>
+                <!-- 收货人 -->
+                <el-col :span="3" class="username">
+                  <span>{{item.name}}</span>
+                </el-col>
+                <!-- 价格 -->
+                <el-col :span="3" class="price">
+                  <p class="unit_price">单价：¥{{value.price}}</p>
+                  <p class="all_price">
+                    <span>总额：</span>
+                    ¥{{item.totalPrice}}
+                  </p>
+                </el-col>
+                <!-- 订单状态 -->
+                <el-col :span="3" class="status">
+                  <!-- 待收货 -->
+                  <div v-if="item.status===3">
+                    <p>等待收货</p>
+                    <a href="#">订单详情</a>
+                  </div>
+                </el-col>
+                <!-- 订单操作 -->
+                <el-col :span="3" class="operation">
+                  <!-- 待收货 -->
+                  <div v-if="item.status===3">
+                    <span>确认收货</span>
+                    <span style="margin-top:5px">退货申请</span>
+                  </div>
+                </el-col>
+              </el-row>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 待评价 -->
+      <div v-if="current===3">
+        <span
+          v-if="!waitComment.length"
+          style="display:inline-block;font-size:16px;margin:30px auto;"
+        >没有该状态的订单哦~</span>
+        <div v-if="waitComment.length">
+          <!-- 表头 -->
+          <el-row class="table_title">
+            <el-col :span="12">
+              <span>订单详情</span>
+            </el-col>
+            <el-col :span="3">
+              <span>收货人</span>
+            </el-col>
+            <el-col :span="3">
+              <span>金额</span>
+            </el-col>
+            <el-col :span="3">
+              <span>状态</span>
+            </el-col>
+            <el-col :span="3">
+              <span>操作</span>
+            </el-col>
+          </el-row>
+          <div class="all_order" v-for="(item,index) in waitComment" :key="index">
+            <!-- 表头 -->
+            <div class="all_order_title">
+              <span class="time">{{item.createdAt}}</span>
+              <span class="order_num">
+                订单号：
+                <i class="num">{{item.billNum}}</i>
+              </span>
+              <!-- 删除按钮 -->
+              <i class="el-icon-delete fr" @click="handleDel(index)"></i>
+            </div>
+            <!-- 订单详情 -->
+            <div class="order_info">
+              <el-row class="order_info_container" v-for="(value,index) in item.items" :key="index">
+                <el-col :span="12" class="goods_info">
+                  <a href="#">
+                    <img :src="value.coverIcon" alt />
+                    <span class="goods_title">{{value.title}}</span>
+                  </a>
+                  <!-- 商品数量 -->
+                  <span class="goods_num">x{{value.count}}</span>
+                </el-col>
+                <!-- 收货人 -->
+                <el-col :span="3" class="username">
+                  <span>{{item.name}}</span>
+                </el-col>
+                <!-- 价格 -->
+                <el-col :span="3" class="price">
+                  <p class="unit_price">单价：¥{{value.price}}</p>
+                  <p class="all_price">
+                    <span>总额：</span>
+                    ¥{{item.totalPrice}}
+                  </p>
+                </el-col>
+                <!-- 订单状态 -->
+                <el-col :span="3" class="status">
+                  <!-- 待付款 -->
+                  <div v-if="item.status===4">
+                    <p>已收货</p>
+                    <a href="#">订单详情</a>
+                  </div>
+                </el-col>
+                <!-- 订单操作 -->
+                <el-col :span="3" class="operation">
+                  <span class="go_comment" v-if="item.status===4" @click="handleToComment(index)">去评论</span>
+                </el-col>
+              </el-row>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -157,7 +406,9 @@
 </template>
 
 <script>
+import { getOrderList, delOrder, updateOrderStatus } from '@/apis/order.js'
 export default {
+  inject: ['reload'],
   data () {
     return {
       // 当前tab栏选中的索引
@@ -226,7 +477,15 @@ export default {
           comment: 4587
         }
       ],
-      hotCurrent: 0
+      hotCurrent: 0,
+      // 订单列表
+      orderList: [],
+      // 待付款
+      waitPayList: [],
+      // 待收货
+      waitDelivery: [],
+      // 待评论
+      waitComment: []
     }
   },
   methods: {
@@ -235,14 +494,23 @@ export default {
       this.current = index
     },
     // 点击删除的图标删除该订单
-    handleDel () {
+    handleDel (index) {
+      console.log(index)
+
       // 提示用户是否确定删除
       this.$confirm('此操作将永久删除该订单, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'error'
       })
-        .then(() => {
+        .then(async () => {
+          // 获取id和token值
+          let id = this.$store.state.user.userInfo.id
+          let orderId = this.orderList[index].id
+          let token = this.$store.state.user.userInfo.sessionToken
+          let res = await delOrder(id, orderId, token)
+          console.log(res)
+          this.orderList.splice(index, 1)
           this.$message({
             type: 'success',
             message: '删除成功!'
@@ -267,12 +535,66 @@ export default {
       } else {
         document.querySelector('.hot_item').classList.add('ul-active2')
       }
+    },
+    // 点击确认按钮
+    handleConfirm (index) {
+      this.$confirm('是否确认收货？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async () => {
+        let data = {
+          memId: this.$store.state.user.userInfo.id,
+          orderId: this.orderList[index].id,
+          status: 4
+        }
+        let token = this.$store.state.user.userInfo.sessionToken
+        let res = await updateOrderStatus(data, token)
+        console.log(res)
+
+        if (res.status === 200) {
+          this.$message({
+            message: '确认收货成功',
+            type: 'success'
+          })
+          // 刷新页面
+          this.reload()
+        }
+      }).catch(() => {})
+    },
+    // 去评论按钮
+    handleToComment (index) {
+      console.log(index)
+      console.log(this.waitComment[index])
     }
   },
   // 监听
-  mounted () {
+  async mounted () {
     this.current = Number(this.$route.query.tabCurrent)
-    this.current = Number(this.$route.params.tabCurrent)
+    // 获取id和token值
+    let id = this.$store.state.user.userInfo.id
+    let token = this.$store.state.user.userInfo.sessionToken
+    let res = await getOrderList(id, token)
+    console.log(res)
+    this.orderList = res.data.results
+    this.orderList.map(v => {
+      v.totalPrice = parseFloat((v.totalPrice - v.freightFee) / 100).toFixed(2)
+      v.createdAt = this.$moment(v.createdAt).format('YYYY-MM-DD hh:mm:ss')
+      v.items.map(value => {
+        value.price = parseFloat(value.price / 100).toFixed(2)
+      })
+      if (v.status === 1) {
+        this.waitPayList.push(v)
+      } else if (v.status === 3) {
+        this.waitDelivery.push(v)
+      } else if (v.status === 4) {
+        this.waitComment.push(v)
+      }
+    })
+    console.log(this.orderList)
+    console.log(this.waitPayList)
+    console.log(this.waitDelivery)
+    console.log(this.waitComment)
   }
 }
 </script>
@@ -389,6 +711,17 @@ export default {
         color: #aaa;
         p {
           line-height: 20px;
+          &.all_price {
+            margin-top: 5px;
+            color: #333;
+            font-size: 13px;
+            font-weight: 600;
+            font-family: verdana;
+            text-align: center;
+            span {
+              display: block;
+            }
+          }
         }
       }
       // 订单状态
@@ -521,8 +854,8 @@ export default {
         border-color: #e9e9e9;
         box-shadow: 0 0 2px 2px #f8f8f8;
       }
-      &:last-child{
-          margin-right: 600px;
+      &:last-child {
+        margin-right: 600px;
       }
     }
     // 商品详情的样式

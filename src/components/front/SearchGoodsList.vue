@@ -36,78 +36,21 @@
     <div class="goods_list">
       <div class="goods_item">
         <ul>
-          <li>
-            <a href="#">
+          <li v-for="(item,index) in searchList" :key="index" @click="$router.push({ name: 'GoodsDetailOther',query:{id:item.id} })">
+            <a href="javascript:void(0);">
               <!-- 图片 -->
               <img
-                src="http://h2.appsimg.com/a.appsimg.com/upload/merchandise/pdcvis/2019/09/19/22/7ddd82fe-5057-4b41-935f-5e2c46e91088_420_531.jpg"
+                :src="item.mainPic"
                 alt
               />
               <!-- 商品信息 -->
               <div class="goods_info">
                 <p class="price">
-                  <span>¥</span>1589.00
+                  <span>¥</span>{{item.originalPrice}}
                 </p>
-                <p class="title">荣耀20S 李现同款 3200万人像超级夜景 4800万超广角AI三摄 麒麟810 全网通版6GB+128GB 蝶羽蓝</p>
+                <p class="title">{{item.title}}</p>
                 <p class="comment">
-                  <span>48万+</span>条评论
-                </p>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="#">
-              <!-- 图片 -->
-              <img
-                src="http://h2.appsimg.com/a.appsimg.com/upload/merchandise/pdcvis/2019/09/19/22/7ddd82fe-5057-4b41-935f-5e2c46e91088_420_531.jpg"
-                alt
-              />
-              <!-- 商品信息 -->
-              <div class="goods_info">
-                <p class="price">
-                  <span>¥</span>1589.00
-                </p>
-                <p class="title">荣耀20S 李现同款 3200万人像超级夜景 4800万超广角AI三摄 麒麟810 全网通版6GB+128GB 蝶羽蓝</p>
-                <p class="comment">
-                  <span>48万+</span>条评论
-                </p>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="#">
-              <!-- 图片 -->
-              <img
-                src="http://h2.appsimg.com/a.appsimg.com/upload/merchandise/pdcvis/2019/09/19/22/7ddd82fe-5057-4b41-935f-5e2c46e91088_420_531.jpg"
-                alt
-              />
-              <!-- 商品信息 -->
-              <div class="goods_info">
-                <p class="price">
-                  <span>¥</span>1589.00
-                </p>
-                <p class="title">荣耀20S 李现同款 3200万人像超级夜景 4800万超广角AI三摄 麒麟810 全网通版6GB+128GB 蝶羽蓝</p>
-                <p class="comment">
-                  <span>48万+</span>条评论
-                </p>
-              </div>
-            </a>
-          </li>
-          <li>
-            <a href="#">
-              <!-- 图片 -->
-              <img
-                src="http://h2.appsimg.com/a.appsimg.com/upload/merchandise/pdcvis/2019/09/19/22/7ddd82fe-5057-4b41-935f-5e2c46e91088_420_531.jpg"
-                alt
-              />
-              <!-- 商品信息 -->
-              <div class="goods_info">
-                <p class="price">
-                  <span>¥</span>1589.00
-                </p>
-                <p class="title">荣耀20S 李现同款 3200万人像超级夜景 4800万超广角AI三摄 麒麟810 全网通版6GB+128GB 蝶羽蓝</p>
-                <p class="comment">
-                  <span>48万+</span>条评论
+                  <span>{{item.monthSales}}</span>月销量
                 </p>
               </div>
             </a>
@@ -119,6 +62,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   data () {
     return {
@@ -130,7 +74,9 @@ export default {
       isShowDown: true,
       isShowStyle: false,
       // 是否显示确认按钮
-      isShowBtn: false
+      isShowBtn: false,
+      // 存储搜索数据列表
+      searchList: []
     }
   },
   methods: {
@@ -154,7 +100,53 @@ export default {
         this.isShowDown = true
         this.isShowStyle = false
       }
+    },
+    // 生成签名
+    makeSign (data, appSecret) {
+      let str = ''
+      let index = 0
+      let sortPor = []
+
+      for (let key in data) {
+        sortPor.push(`${key}=${data[key]}`)
+      }
+
+      // 排序
+      sortPor.sort()
+
+      // 转url
+      for (let key in sortPor) {
+        str = `${str}${index === 0 ? '' : '&'}${sortPor[key]}`
+        index++
+      }
+
+      // md5加密
+      // let ret = this.$md5.update(`${str}&key=${appSecret}`).digest('hex')
+      let ret = this.$md5(`${str}&key=${appSecret}`).toUpperCase()
+      return ret
     }
+  },
+  mounted () {
+    let appSecret = '95cea2a805c4886c54d80d8a2c15d523'
+    let data = {
+      appKey: '5ea5acab9ff48',
+      version: 'v1.2.2',
+      type: 0,
+      pageId: 1,
+      pageSize: 32,
+      keyWords: this.$route.query.keyword
+    }
+    axios({
+      url: '/api/goods/list-super-goods',
+      method: 'get',
+      params: {
+        ...data,
+        sign: this.makeSign(data, appSecret)
+      }
+    }).then(res => {
+      console.log(res)
+      this.searchList = res.data.data.list
+    })
   }
 }
 </script>
@@ -238,14 +230,17 @@ export default {
 .goods_item ul {
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap;
   // 商品图片的样式
   li {
+    width: 22%;
     margin-right: 20px;
     margin-top: 20px;
     padding-bottom: 20px;
     a img {
-      width: 220px;
-      height: 220px;
+      width: 200px;
+      height: 200px;
+      margin: 20px 10px;
       object-fit: cover; // 防止图片变形
     }
     &:last-child {

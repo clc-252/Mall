@@ -13,7 +13,7 @@
         ></el-progress>
         <p class="comment_num">
           共有
-          <span class="num">{{data.all_remarks}}</span> 人点评
+          <span class="num">{{commentList.count}}</span> 人点评
         </p>
       </div>
       <!-- 评论标签 -->
@@ -31,19 +31,21 @@
         <span class="very_bad_remarks">非常差{{data.very_bad_remarks}}</span>
       </div>
     </div>
-    <div class="comment_info clearfix">
+    <div class="comment_info clearfix" v-for="(item,index) in commentList.results" :key="index">
       <div class="user_info fl">
         <img src="https://ss1.bdstatic.com/70cFuXSh_Q1YnxGkpoWK1HF6hhy/it/u=3399948804,1253545971&fm=26&gp=0.jpg" alt />
-        <p class="username">地球火星网友</p>
+        <p class="username">{{item.username}}</p>
       </div>
       <div
         class="comment_text fl"
-      >适合带6岁以上小朋友 室外室内幼儿游戏活动区域都不多 室外公共游泳池很大 但这个季节也很晒 花园很美 大唐装修也很适合中老年的审美 适合带父母出游 中餐厅东西做的不错 量也很大 房间内部设施简约大气 厚重中又带有现代化气息 床垫软硬适中 大床1.95 总的来说 是一趟不错的旅行 还会再来</div>
+      > {{item.content}}</div>
     </div>
   </div>
 </template>
 
 <script>
+// 引入获取评论的方法
+import { getComment, text } from '@/apis/goods.js'
 export default {
   // 接收数据
   props: {
@@ -54,6 +56,21 @@ export default {
         return {}
       }
     }
+  },
+  data () {
+    return {
+      // 评论数据
+      commentList: {}
+    }
+  },
+  async mounted () {
+    // 获取商品id
+    let id = this.$route.query.id
+    let res = await getComment(id)
+    console.log(res)
+    this.commentList = res.data
+    let res2 = await text(id)
+    console.log('测试:' + res2)
   }
 }
 </script>
@@ -70,19 +87,25 @@ export default {
       position: relative;
       float: left;
       width: 120px;
-      height: 100px;
+      height: 110px;
       padding-bottom: 15px;
       margin-right: 20px;
       border-right: 1px dashed #eee;
       background-color: #fff;
       flex-direction: column;
+      text-align: center;
+      /deep/.el-progress-circle{
+        margin: auto;
+        margin-left: 12px;
+      }
       /deep/.el-progress__text{
         font-size: 20px!important;
         color: #e4393c;
-        width: 85px;
+        margin-left: -4px;
       }
       .comment_num {
         font-size: 14px;
+        margin-top: 10px;
         .num {
           color: rgb(255, 153, 0);
         }
@@ -133,6 +156,7 @@ export default {
     padding-left: 15px;
     .user_info {
       margin-right: 40px;
+      text-align: center;
       img {
         width: 80px;
         height: 80px;
@@ -140,6 +164,7 @@ export default {
         border: 1px solid pink;
       }
       .username {
+        margin-top: 5px;
         color: #666;
       }
     }

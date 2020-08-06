@@ -47,10 +47,10 @@
           <label for="inputPassword3" class="col-sm-2 control-label">用户头像：</label>
           <div class="col-sm-10">
             <img src="@/assets/merchants/timg.jpg" alt class="user_pic" />
-            <input style="display: block" name="userPic" type="file" id="exampleInputFile" />
+            <input style="display: block" name="userPic" type="file" id="exampleInputFile" @change="handleChange" />
             <!-- 给label标签的for属性赋值,值是input标签的id,那这样的话点击label就相当于点击了input -->
             <br />
-            <label for="exampleInputFile">
+            <label for="exampleInputFile" class="userImg">
               <img src="@/assets/merchants/timg.jpg" style="height: 50px;" alt />
             </label>
           </div>
@@ -79,7 +79,17 @@
 </template>
 
 <script>
-export default {}
+import { uploadUserPic } from '@/apis/user.js'
+export default {
+  methods: {
+    async handleChange (event) {
+      console.log(event)
+      let filename = event.target.files[0].name
+      let res = await uploadUserPic(filename)
+      console.log(res)
+    }
+  }
+}
 </script>
 
 <style lang='less' scoped>
@@ -115,7 +125,19 @@ export default {}
 .form-group {
   margin-bottom: 20px;
   display: flex;
+  position: relative;
   // justify-content: center;
+  .userImg{
+    position: absolute;
+    top: 0;
+    left: 15px;
+    opacity: 0;
+    img{
+      width: 100px;
+      height: 100px!important;
+      border-radius: 50%;
+    }
+  }
 }
 
 .form-group label {

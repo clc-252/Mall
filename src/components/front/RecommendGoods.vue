@@ -2,27 +2,20 @@
 <template>
   <!-- 为你推荐模块的组件 -->
   <div class="recommend">
-    <!-- tab栏 -->
-    <div class="recommend_tab">
-      <ul class="clearfix">
-        <li v-for="(item,index) in tabList" :key="index" class="fl" @click="handleClick(index)">
-          <div class="tab_title" :class="{tabTitle:current===index}">{{item.title}}</div>
-          <div class="tab_desc" :class="{tabDesc:current===index}">{{item.desc}}</div>
-          <p class="tab_line"></p>
-        </li>
-      </ul>
-    </div>
-    <!-- 精选列表 -->
-    <div class="choiceness" v-if="current===0">
+    <div class="choiceness">
       <ul>
-        <li>
-          <a href="#">
-            <img src="@/assets/front/piczoom_big1.jpg" alt />
+        <li
+          v-for="(item,index) in goodsList"
+          :key="index"
+          @click="$router.push({ name: 'GoodsDetail',query:{id:item.id} })"
+        >
+          <a href="JavaScript:void(0)">
+            <img :src="item.coverIcon" alt />
             <!-- 信息 -->
-            <div class="title">Apple iPhone 8 Plus (A1864) 64GB 深空灰色 移动联通电信4G手机</div>
+            <div class="title">{{item.title}}</div>
             <div class="price">
               <i>¥</i>
-              <span>4999.00</span>
+              <span>{{item.price}}</span>
             </div>
             <!-- hover -->
             <div class="item_hover">
@@ -37,120 +30,99 @@
         </li>
       </ul>
     </div>
-    <!-- 智能先锋列表 -->
-    <div class="electrical" v-if="current===1">智能先锋列表</div>
-    <!-- 居家优品列表 -->
-    <div class="life" v-if="current===2">居家优品列表</div>
-    <!-- 超市百货列表 -->
-    <div class="supermarket" v-if="current===3">超市百货列表</div>
-    <!-- 时尚达人列表 -->
-    <div class="fashion" v-if="current===4">时尚达人列表</div>
-    <!-- 进口好物列表 -->
-    <div class="import" v-if="current===5">进口好物列表</div>
   </div>
 </template>
 
 <script>
+// 引入获取商品列表数据的方法
+import { getGoodsList } from '@/apis/goods.js'
+// import { getGoodsData } from '@/apis/goods.js'
+import axios from 'axios'
 export default {
   data () {
     return {
-      // 当前tab
-      current: 0,
-      // tab栏的数据
-      tabList: [
-        {
-          title: '精选',
-          desc: '猜你喜欢'
-        },
-        {
-          title: '智能先锋',
-          desc: '大电器城'
-        },
-        {
-          title: '居家优品',
-          desc: '品质生活'
-        },
-        {
-          title: '超市百货',
-          desc: '百货生鲜'
-        },
-        {
-          title: '时尚达人',
-          desc: '美妆穿搭'
-        },
-        {
-          title: '进口好物',
-          desc: '国际商城'
-        }
-      ]
+      // 为你推荐模块商品数据
+      goodsList: []
     }
   },
+  async mounted () {
+    // 请求商品列表
+    let res = await getGoodsList()
+    if (res.status === 200) {
+      console.log(process.env)
+
+      this.goodsList.push(...res.data.results)
+      this.goodsList.map(v => {
+        v.price = parseFloat(v.price / 100).toFixed(2)
+      })
+    }
+
+    let appSecret = '95cea2a805c4886c54d80d8a2c15d523'
+    let data = {
+      appKey: '5ea5acab9ff48',
+      version: 'v1.2.2',
+      pageId: 1
+    }
+    // let sign = this.makeSign(data, appSecret)
+    // let res2 = await getGoodsData(data, sign)
+    // console.log(res2)
+
+    // 测试
+    axios({
+      method: 'get',
+      url: '/api/goods/get-goods-list',
+      params: {
+        ...data,
+        sign: this.makeSign(data, appSecret)
+      }
+    }).then(res => {
+      console.log(res)
+    })
+
+    // axios.get(`/api/goods/get-goods-list?appKey=${data.appKey}&version=${data.version}&sign=${this.makeSign(data, appSecret)}`).then(res => {
+    //   console.log(res)
+    // })
+  },
   methods: {
-    // 切换tab栏
-    handleClick (index) {
-      this.current = index
+    // 生成签名
+    makeSign (data, appSecret) {
+      let str = ''
+      let index = 0
+      let sortPor = []
+
+      for (let key in data) {
+        sortPor.push(`${key}=${data[key]}`)
+      }
+
+      // 排序
+      sortPor.sort()
+      console.log(sortPor)
+
+      // 转url
+      for (let key in sortPor) {
+        str = `${str}${index === 0 ? '' : '&'}${sortPor[key]}`
+        console.log(str)
+
+        index++
+      }
+
+      // md5加密
+      // let ret = this.$md5.update(`${str}&key=${appSecret}`).digest('hex')
+      let ret = this.$md5(`${str}&key=${appSecret}`).toUpperCase()
+      console.log(ret)
+
+      return ret
     }
   }
 }
 </script>
 
 <style lang='less' scoped>
-// tab栏
-.recommend_tab {
-  background-color: #fff;
-  margin-bottom: 10px;
-  li {
-    position: relative;
-    width: 166px;
-    height: 60px;
-    text-align: center;
-    cursor: pointer;
-    &:last-child .tab_line {
-      height: 0;
-    }
-  }
-  .tab_title {
-    height: 27px;
-    line-height: 27px;
-    margin-top: 7px;
-    margin-bottom: 4px;
-    font-size: 16px;
-    color: #333;
-    font-weight: 700;
-  }
-  .tab_desc {
-    color: #999;
-    font-size: 14px;
-  }
-  .tab_line {
-    position: absolute;
-    right: 0;
-    top: 0;
-    height: 40px;
-    margin: 10px 0;
-    width: 1px;
-    background: #dfdfdf;
-    background: linear-gradient(180deg, white, #dfdfdf 51%, white);
-  }
-  //  切换tab栏时，tab栏的样式
-  .tabTitle {
-    display: inline-block;
-    width: 74px;
-    height: 27px;
-    padding: 0 5px;
-    background: #e1251b;
-    color: #fff;
-    border-radius: 50px;
-  }
-  .tabDesc {
-    color: #e1251b;
-  }
-}
 // 精选列表
 .choiceness {
   ul {
     display: flex;
-    justify-content: space-between;
+    flex-wrap: wrap;
   }
   li {
     position: relative;
@@ -158,10 +130,19 @@ export default {
     background-color: #fff;
     text-align: center;
     padding: 20px 15px;
-    &:hover .item_hover{
+    margin: 0 12px 15px 0;
+    &:hover .item_hover {
       display: block;
       // background-image: linear-gradient(180deg,rgba(255,255,255,.2),white)
-      background: linear-gradient(180deg,rgba(255,255,255,.2) 50%,white 90%,white)
+      background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.2) 50%,
+        white 90%,
+        white
+      );
+    }
+    &:nth-child(5n) {
+      margin-right: 0;
     }
     img {
       width: 130px;
@@ -177,6 +158,7 @@ export default {
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
+      text-align: left;
     }
     .price {
       display: inline-block;
@@ -201,7 +183,7 @@ export default {
       left: 15px;
       width: 160px;
       height: 260px;
-      .el-icon-close{
+      .el-icon-close {
         position: absolute;
         top: 0;
         right: 0;
@@ -221,11 +203,11 @@ export default {
         text-align: center;
         cursor: pointer;
         background-color: #333;
-        color:#fff;
-        &:hover{
+        color: #fff;
+        &:hover {
           background-color: #c81623;
         }
-        .el-icon-view{
+        .el-icon-view {
           font-size: 14px;
         }
       }

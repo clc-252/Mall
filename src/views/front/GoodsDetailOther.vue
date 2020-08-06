@@ -47,7 +47,7 @@
           <!-- 项目信息包装部分 -->
           <div class="itemInfo-wrap">
             <!-- 标题 -->
-            <div class="sku-name">{{goodsDetail.title}}</div>
+            <div class="sku-name">{{goodsDetailOther.title}}</div>
             <div class="news">
               <a
                 href="https://pro.jd.com/mall/active/3vhrJRWUDvx84MMSPJ2gnMuggew3/index.html"
@@ -62,7 +62,7 @@
                 <div class="price-content fl">
                   <i>
                     ￥
-                    <span>{{goodsDetail.price}}</span>
+                    <span>{{goodsDetailOther.originalPrice}}</span>
                   </i>
                   <em>降价通知</em>
                 </div>
@@ -92,7 +92,8 @@
               <!-- 运费 -->
               <div class="freight">
                 <span class="freight_title">运费</span>
-                <span class="freight_text">{{goodsDetail.freight.templateName}}</span>
+                <!-- <span class="freight_text">{{goodsDetailOther.yunfeixian}}</span> -->
+                <span class="freight_text">免运费</span>
               </div>
               <!-- 当商品为手机时的选择 -->
               <!-- <div class="choose">
@@ -259,7 +260,13 @@
         </div>
         <!-- 内容 -->
         <!-- 商品介绍的内容 -->
-        <GoodsIntroduction v-if="currentInfoTab===0" :goodsInfo="goodsDetail.detail"/>
+        <div class="GoodsIntroduction" v-if="currentInfoTab===0">
+          <ul>
+            <li v-for="(item,index) in goodsDetailImg" :key="index">
+              <img :src="item" alt="" style="width:100%">
+            </li>
+          </ul>
+        </div>
         <!-- 规格与包装 -->
         <Specifications v-if="currentInfoTab===1" />
         <!-- 售后保障 -->
@@ -268,7 +275,6 @@
         <Comment v-if="currentInfoTab===3" />
       </div>
     </div>
-    <!-- <div v-html="goodsDetail.detail">{{goodsDetail.detail}}</div> -->
     <!-- 底部 -->
     <CommentFooter></CommentFooter>
   </div>
@@ -278,8 +284,6 @@
 // 引入公共部分
 import CommentHeader from '@/components/CommentHeader.vue'
 import CommentFooter from '@/components/CommentFooter.vue'
-// 商品介绍的组件
-import GoodsIntroduction from '@/components/front/GoodsIntroduction'
 // 规格和包装的组件
 import Specifications from '@/components/front/Specifications'
 // 售后保障的组件
@@ -290,8 +294,8 @@ import Comment from '@/components/front/Comment'
 import PicZoom from 'vue-piczoom'
 
 // 引入获取商品详情的方法
-import { getGoodsDetail, getHotGoods, followGoods } from '@/apis/goods.js'
-
+import { getHotGoods, followGoods } from '@/apis/goods.js'
+import axios from 'axios'
 export default {
   data () {
     return {
@@ -338,7 +342,9 @@ export default {
       color: '图片色',
       size: '150/80A/S',
       // 本地购物车数据
-      cartList: []
+      cartList: [],
+      goodsDetailOther: [],
+      goodsDetailImg: []
     }
   },
   // 注册
@@ -346,7 +352,6 @@ export default {
     CommentHeader,
     CommentFooter,
     PicZoom,
-    GoodsIntroduction,
     Specifications,
     AfterSaleProtection,
     Comment
@@ -357,7 +362,28 @@ export default {
     // 获取商品id
     let id = this.$route.query.id
     // 页面一加载就调用获取商品信息的方法
-    this.getGoodsInfoById(id)
+    // this.getGoodsInfoById(id)
+
+    let appSecret = '95cea2a805c4886c54d80d8a2c15d523'
+    let data = {
+      appKey: '5ea5acab9ff48',
+      version: 'v1.2.2',
+      id
+    }
+    axios({
+      url: '/api/goods/get-goods-details',
+      method: 'get',
+      params: {
+        ...data,
+        sign: this.makeSign(data, appSecret)
+      }
+    }).then(res => {
+      console.log(res)
+      this.goodsDetailOther = res.data.data
+      this.imgurl = this.goodsDetailOther.mainPic
+      this.previewList = this.goodsDetailOther.imgs.split(',')
+      this.goodsDetailImg = this.goodsDetailOther.detailPics.split(',')
+    })
 
     // 如果本地中存储有配送地址
     if (JSON.parse(localStorage.getItem('address'))) {
@@ -370,6 +396,30 @@ export default {
     this.hotList = hotRes.data.results
   },
   methods: {
+    // 生成签名
+    makeSign (data, appSecret) {
+      let str = ''
+      let index = 0
+      let sortPor = []
+
+      for (let key in data) {
+        sortPor.push(`${key}=${data[key]}`)
+      }
+
+      // 排序
+      sortPor.sort()
+
+      // 转url
+      for (let key in sortPor) {
+        str = `${str}${index === 0 ? '' : '&'}${sortPor[key]}`
+        index++
+      }
+
+      // md5加密
+      // let ret = this.$md5.update(`${str}&key=${appSecret}`).digest('hex')
+      let ret = this.$md5(`${str}&key=${appSecret}`).toUpperCase()
+      return ret
+    },
     // 处理小图展示的位置
     handlePrev () {
       document.querySelector('.preview').classList.remove('move')
@@ -435,8 +485,8 @@ export default {
     // 点击添加购物车按钮触发
     handleAddToCart () {
       let obj = {
-        title: this.goodsDetail.title,
-        price: this.goodsDetail.price,
+        title: this.goodsDetailOther.title,
+        price: this.goodsDetailOther.originalPrice,
         count: this.goodsNum,
         productIcon: this.imgurl,
         productId: Number(this.$route.query.id),
@@ -466,15 +516,6 @@ export default {
         // 存到本地
         localStorage.setItem('cartList', JSON.stringify(newCartList))
       }
-    },
-    // 根据id获取商品信息
-    async getGoodsInfoById (id) {
-      // 根据商品id获取该商品的详情
-      let res = await getGoodsDetail(id)
-      this.goodsDetail = res.data
-      this.goodsDetail.price = parseFloat(this.goodsDetail.price / 100).toFixed(2)
-      this.imgurl = this.goodsDetail.coverIcon
-      this.previewList = this.goodsDetail.pics
     },
     // 数组去重的方法
     unquireObjectInArray (array) {
@@ -526,8 +567,8 @@ export default {
         this.$router.push({
           name: 'SubmitOrder',
           params: {
-            title: this.goodsDetail.title,
-            price: this.goodsDetail.price,
+            title: this.goodsDetailOther.title,
+            price: this.goodsDetailOther.originalPrice,
             count: this.goodsNum,
             productIcon: this.imgurl,
             productId: Number(this.$route.query.id),
@@ -638,7 +679,6 @@ export default {
         ul {
           display: flex;
           justify-content: space-around;
-          padding-left: 94px;
           width: 350px;
           overflow: hidden;
           margin: 0 auto;

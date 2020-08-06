@@ -50,18 +50,17 @@
         </p>
       </div>
       <!-- 展示 -->
-      <div class="demo_list">
-        <img
-          src="https://img30.360buyimg.com/jgsq-productsoa/jfs/t1/92524/39/13783/70627/5e5daea4E104c1965/018e9bf10d0b788b.jpg"
-          alt
-        />
+      <div class="demo_list" v-html="goodsInfo">
+        {{goodsInfo}}
       </div>
     </div>
   </div>
 </template>
 
 <script>
-export default {}
+export default {
+  props: ['goodsInfo']
+}
 </script>
 
 <style lang="less" scoped>

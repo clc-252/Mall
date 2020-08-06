@@ -10,7 +10,7 @@
           <i>SPECIFICATIONS</i>
         </p>
       </div>
-      <div class="item clearfix" v-for="(item,index) in list" :key="index">
+      <!-- <div class="item clearfix" v-for="(item,index) in list" :key="index">
         <h3 class="fl">{{item.item_title}}</h3>
         <div class="list fl">
           <dl class="clearfix" v-for="(v,i) in item.detial" :key="i">
@@ -19,7 +19,8 @@
             <dd>{{v.detial_text}}</dd>
           </dl>
         </div>
-      </div>
+      </div> -->
+      <div class="item clearfix" style="padding-left:20px;font-size:14px">商品规格 详情请看商品介绍</div>
     </div>
     <div class="package-list">
       <!-- head -->
@@ -32,7 +33,8 @@
       </div>
       <div class="content">
         <h3>包装清单</h3>
-        <p>装有 iOS 12 的 iPhone、采用闪电接头的 EarPods、闪电转 USB 连接线、USB 电源适配器、资料。</p>
+        <!-- <p>装有 iOS 12 的 iPhone、采用闪电接头的 EarPods、闪电转 USB 连接线、USB 电源适配器、资料。</p> -->
+        <p>装有衣服 x1，包装袋 x1</p>
       </div>
     </div>
   </div>

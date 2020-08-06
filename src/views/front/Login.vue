@@ -142,6 +142,8 @@
 </template>
 
 <script>
+// 引入实现用户登录的方法
+// import { login } from '@/apis/user.js'
 export default {
   data () {
     /*
@@ -184,9 +186,20 @@ export default {
     },
     // 处理用户点击登陆按钮之后的登陆事件
     handleLoginSubmit () {
-      this.$refs.form.validate(valid => {
+      this.$refs.form.validate((valid) => {
         // console.log(valid)
         // 如果结果为true，则发送登陆请求
+        if (valid) {
+          // 密码加密
+          this.form.password = this.$md5(this.form.password)
+          // 发送请求
+          this.$store.dispatch('login', this.form).then((res) => {
+            this.$message.success('登陆成功！')
+
+            // 跳转回上一个页面
+            this.$router.back()
+          })
+        }
       })
     }
   }
@@ -274,6 +287,7 @@ export default {
           font-size: 17px;
           background-color: #e4393c;
           border-color: transparent;
+          outline: none;
         }
       }
       .el-input {

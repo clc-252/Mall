@@ -9,24 +9,26 @@
       <div class="nav_item">
         <ul>
           <li>
-            <span>首页</span>
+            <span @click="$router.push({name: 'HomeIndex'})">首页</span>
             <i class="el-icon-arrow-down"></i>
             <div class="service_item trilateral">
-              <a href="#">订单中心</a>
-              <a href="#">我的关注</a>
+              <a
+                href="javascript:void(0)"
+                @click="$router.push({path: 'Homeordercenter',query:{tabCurrent:0}})"
+              >订单中心</a>
+              <a href="javascript:void(0)" @click="$router.push({name: 'HomeAttention'})">我的关注</a>
               <a href="#">我的钱包</a>
               <a href="#">客户服务</a>
               <a href="#">特色业务</a>
-              <a href="#">设置</a>
+              <a href="javascript:void(0)" @click="$router.push({name: 'HomeUser',query:{tabCurrent:0}})">设置</a>
             </div>
           </li>
           <li>
             <span>账户设置</span>
             <i class="el-icon-arrow-down"></i>
             <div class="setting trilateral">
-              <a href="#">个人信息</a>
-              <a href="#">收货地址</a>
-              <a href="#">安全管理</a>
+              <a href="javascript:void(0)" @click="$router.push({name: 'HomeUser',query:{tabCurrent:0}})">个人信息</a>
+              <a href="javascript:void(0)" @click="$router.push({name: 'HomeUser',query:{tabCurrent:1}})">收货地址</a>
             </div>
           </li>
           <li>
@@ -49,7 +51,10 @@
           <dl class="order_center">
             <dt>订单中心</dt>
             <dd>
-              <a href="javascript:void(0)" @click="$router.push({name: 'HomeOrderCenter',params:{tabCurrent:0}})">我的订单</a>
+              <a
+                href="javascript:void(0)"
+                @click="$router.push({path: '/front/home/Homeordercenter',query:{tabCurrent:0}})"
+              >我的订单</a>
             </dd>
             <dd>
               <a href="#">评价晒单</a>
@@ -63,9 +68,6 @@
             </dd>
             <dd>
               <a href="#">关注店铺</a>
-            </dd>
-            <dd>
-              <a href="#">内容收藏</a>
             </dd>
           </dl>
           <!-- 我的钱包 -->
@@ -85,7 +87,7 @@
           <dl class="service">
             <dt>客户服务</dt>
             <dd>
-              <a href="#">返修退换货</a>
+              <a href="javascript:void(0)" @click="$router.push({name: 'HomeRefund'})">返修退换货</a>
             </dd>
             <dd>
               <a href="#">意见建议</a>
@@ -120,18 +122,15 @@
                 <a href="//jipiao.jd.com/" target="_blank">京东机票</a>
               </div>
             </dd>
-          </dl> -->
+          </dl>-->
           <!-- 设置个人信息 -->
           <dl class="my_info">
             <dt>设置</dt>
             <dd>
-              <a href="#">个人信息</a>
+              <a href="javascript:void(0)" @click="$router.push({name: 'HomeUser',query:{tabCurrent:0}})">个人信息</a>
             </dd>
             <dd>
-              <a href="#">收货地址</a>
-            </dd>
-            <dd>
-              <a href="#">安全管理</a>
+              <a href="javascript:void(0)" @click="$router.push({name: 'HomeUser',query:{tabCurrent:1}})">收货地址</a>
             </dd>
           </dl>
         </div>
@@ -165,7 +164,7 @@ export default {
   .header {
     height: 90px;
     border-bottom: 0;
-    .logo{
+    .logo {
       height: 90px;
     }
     .logo-bd {
@@ -183,6 +182,17 @@ export default {
     }
     .navitems {
       display: none;
+    }
+    .shopcar {
+      .shopcarlist {
+        display: none;
+      }
+      &:hover .shopcarlist {
+        display: none;
+      }
+      &:hover .car {
+        border-color: #e1251b;
+      }
     }
   }
 }
@@ -246,15 +256,15 @@ export default {
           top: 0;
           left: 43%;
         }
-        &:hover{
+        &:hover {
           display: block;
         }
       }
-      .setting{
+      .setting {
         left: 212px;
       }
-      .information{
-        left:298px;
+      .information {
+        left: 298px;
       }
     }
   }
@@ -319,7 +329,7 @@ export default {
     }
   }
   // 右侧主体部分
-  .container{
+  .container {
     float: left;
     width: 830px;
     margin-top: 25px;

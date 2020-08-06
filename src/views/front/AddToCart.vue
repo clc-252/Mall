@@ -12,22 +12,22 @@
       </div>
       <!-- 商品信息 -->
       <div class="goods fl">
-        <a href="#" target="_blank">
-          <img src="../../assets/front/hot-goods9.jpg" alt />
+        <a href="javascript:void(0);" target="_blank">
+          <img :src="goodsList.productIcon" alt />
         </a>
         <div class="goods_info">
-          <a href="#" target="_blank">
-            <p class="goods_title">Apple 苹果 iPhone 11 手机 紫色 全网通128GApple 苹果 iPhone 11 手机 紫色 全网通128G</p>
+          <a href="javascript:void(0);" target="_blank">
+            <p class="goods_title">{{goodsList.title}}</p>
           </a>
           <div class="goods_other">
-            <span class="color">颜色：紫色</span>
-            <span class="size_num">尺码：全网通128G&nbsp;/&nbsp;数量：1</span>
+            <span class="color">颜色：{{goodsList.color}}</span>
+            <span class="size_num">尺码：{{goodsList.size}}&nbsp;/&nbsp;数量：{{goodsList.count}}</span>
           </div>
         </div>
       </div>
       <!-- 按钮 -->
       <div class="btn fr">
-        <a href="#" target="_blank" class="goods_detail">查看商品详情</a>
+        <a href="javascript:void(0);" target="_blank" class="goods_detail" @click="$router.push({ name: 'GoodsDetail',query:{id:goodsList.productId }})">查看商品详情</a>
         <a href="http://localhost:8080/#/front/cart" target="_blank" class="to_cart">
           去购物车结算
           <i class="el-icon-arrow-right"></i>
@@ -43,10 +43,28 @@
 // 引入公共部分
 import CommentHeader from '@/components/CommentHeader.vue'
 import CommentFooter from '@/components/CommentFooter.vue'
+
+// 引入加入购物车的方法
+// import { addToCart } from '@/apis/cart.js'
 export default {
+  data () {
+    return {
+      goodsList: {}
+    }
+  },
   components: {
     CommentHeader,
     CommentFooter
+  },
+  mounted () {
+    // let token = this.$store.state.user.userInfo.sessionToken
+    // console.log(this.$route.query)
+    this.goodsList = this.$route.query
+
+    // let res = await addToCart(token, this.$route.query)
+    // console.log(res)
+    // this.goodsList = res
+    // console.log(this.goodsList)
   }
 }
 </script>

@@ -52,6 +52,7 @@
 </template>
 
 <script>
+import { getShop } from '@/apis/user.js'
 export default {
   data () {
     return {
@@ -68,11 +69,21 @@ export default {
       rules: {
         shopName: [
           { required: true, message: '请输入店铺名称', trigger: 'blur' },
-          { min: 3, pattern: /^[^ ]+$/, message: '至少包含3个字符，且不允许有空格', trigger: 'blur' }
+          {
+            min: 3,
+            pattern: /^[^ ]+$/,
+            message: '至少包含3个字符，且不允许有空格',
+            trigger: 'blur'
+          }
         ],
         address: [
           { required: true, message: '请输入店铺的详细地址', trigger: 'blur' },
-          { pattern: /^([\u4E00-\u9FA5A-Za-z0-9_]+(省|市|区|县|道|路|街|号)){5,}$/, message: '地址格式不正确，例：xx省xx市xx区xx（镇/县）xx（路/街/道）xx号', trigger: 'blur' }
+          {
+            pattern: /^([\u4E00-\u9FA5A-Za-z0-9_]+(省|市|区|县|道|路|街|号)){5,}$/,
+            message:
+              '地址格式不正确，例：xx省xx市xx区xx（镇/县）xx（路/街/道）xx号',
+            trigger: 'blur'
+          }
         ],
         sellerName: [
           { required: true, message: '请输入联系人姓名', trigger: 'blur' },
@@ -100,8 +111,16 @@ export default {
           }
         ],
         license: [
-          { required: true, message: '请输入18位的营业执照号', trigger: 'blur' },
-          { pattern: /^([0-9ABCDEFGHJKLMNPQRTUWXY]{2})([0-9]{6})([0-9ABCDEFGHJKLMNPQRTUWXY]{9})([0-9Y])$/, message: '营业执照号格式错误', trigger: 'blur' }
+          {
+            required: true,
+            message: '请输入18位的营业执照号',
+            trigger: 'blur'
+          },
+          {
+            pattern: /^([0-9ABCDEFGHJKLMNPQRTUWXY]{2})([0-9]{6})([0-9ABCDEFGHJKLMNPQRTUWXY]{9})([0-9Y])$/,
+            message: '营业执照号格式错误',
+            trigger: 'blur'
+          }
         ],
         representative: [
           { required: true, message: '请输入法定代表人姓名', trigger: 'blur' },
@@ -144,6 +163,11 @@ export default {
         })
       })
     }
+  },
+  async mounted () {
+    // let objectId = '58f5d040a4e75d000cda8b77'
+    let res = await getShop()
+    console.log(res)
   }
 }
 </script>

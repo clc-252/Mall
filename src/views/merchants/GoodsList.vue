@@ -7,63 +7,107 @@
     <!-- 商品列表 -->
     <div class="goods_main">
       <el-table :data="tableData" border style="width: 100%">
-        <el-table-column prop="goodsname" label="商品标题" width="400"></el-table-column>
+        <el-table-column prop="title" label="商品标题" width="400"></el-table-column>
         <el-table-column prop="price" label="商品价格"></el-table-column>
-        <el-table-column prop="cate" label="分类" width="200">
-            <!-- slot-scope：可以获取到row、column、$index和store（table内部的状态管理）的数据 -->
-            <template  slot-scope="scope">
-                <span v-for="(item,index) in tableData[scope.$index].cate" :key="index">{{item}}、</span>
+        <el-table-column prop="categories" label="分类" width="200">
+          <!-- slot-scope：可以获取到row、column、$index和store（table内部的状态管理）的数据 -->
+          <template slot-scope="scope">
+            <span
+              v-for="(item,index) in tableData[scope.$index].categories"
+              :key="index"
+            >{{item.name}}</span>
           </template>
         </el-table-column>
-        <el-table-column prop="date" label="发布时间"></el-table-column>
+        <el-table-column prop="createdAt" label="发布时间" sortable></el-table-column>
         <el-table-column label="操作" width="160">
           <template slot-scope="scope">
             <el-button type="success" size="mini">修改</el-button>
-            <el-button type="danger" size="mini" @click.native.prevent="handleDel(scope.$index, tableData)">删除</el-button>
+            <el-button
+              type="danger"
+              size="mini"
+              @click.native.prevent="handleDel(scope.$index, tableData)"
+            >删除</el-button>
           </template>
         </el-table-column>
       </el-table>
     </div>
+    <!-- 分页 -->
+    <el-pagination
+      background
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :current-page="pageIndex"
+      :page-sizes="[5, 10, 15, 20]"
+      :page-size="pageSize"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="total"
+    ></el-pagination>
   </div>
 </template>
 
 <script>
+// 获取商品列表数据
+import { getGoodsListData } from '@/apis/goods.js'
 export default {
   data () {
     return {
-      tableData: [
-        {
-          goodsname:
-            '【国行现货4999元起】Apple 苹果 iPhone 11 移动联通电信4G手机 双卡双待 绿色 全网通 (64GB)',
-          price: '2345',
-          cate: ['数码', '手机', '小米'],
-          date: '2016-05-02'
-        }
-      ]
+      tableData: [],
+      total: 0, // 商品总数
+      pageIndex: 1, // 当前页
+      pageSize: 5 // 每页显示的商品条数
     }
   },
   methods: {
+    // 根据pagesize和pageIndex请求不同页面的数据
+    async init () {
+      let num = (this.pageIndex - 1) * this.pageSize
+      let res = await getGoodsListData(num, this.pageSize)
+      console.log(res)
+      this.tableData = res.data.results
+      this.tableData.map(v => {
+        v.price = parseFloat(v.price / 100).toFixed(2)
+        v.createdAt = this.$moment(v.createdAt).format('YYYY-MM-DD hh:mm:ss')
+      })
+      this.total = res.data.count
+    },
     // 点击删除按钮触发
     handleDel (index, rows) {
       this.$confirm('此操作将永久删除该商品, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(() => {
-        // 删除所点击的商品
-        rows.splice(index, 1)
-        // 弹窗提示用户
-        this.$message({
-          type: 'success',
-          message: '删除成功!'
-        })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        })
       })
+        .then(() => {
+          // 删除所点击的商品
+          rows.splice(index, 1)
+          // 弹窗提示用户
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          })
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          })
+        })
+    },
+    handleSizeChange (val) {
+      this.pageIndex = 1
+      this.pageSize = val
+      // 请求数据
+      this.init()
+    },
+    handleCurrentChange (val) {
+      this.pageIndex = val
+      // 请求数据
+      this.init()
     }
+  },
+  mounted () {
+    // 请求数据
+    this.init()
   }
 }
 </script>
@@ -96,7 +140,7 @@ export default {
 .goods_main {
   padding: 20px;
   /deep/.el-table__row {
-    font-size: 12px;
+    font-size: 13px;
     .cell {
       display: -webkit-box;
       text-overflow: ellipsis;
@@ -104,9 +148,13 @@ export default {
       -webkit-line-clamp: 1;
       -webkit-box-orient: vertical;
     }
-    .el-button{
-        outline: none;
+    .el-button {
+      outline: none;
     }
   }
+}
+// 分页
+.el-pagination {
+  padding: 20px;
 }
 </style>

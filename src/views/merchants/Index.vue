@@ -25,10 +25,12 @@
           text-color="#fff"
           active-text-color="#ffd04b"
         >
-          <el-menu-item index="1">
+        <!-- 首页 -->
+          <el-menu-item index="/merchants/">
             <i class="el-icon-s-home"></i>
             <span>首页</span>
           </el-menu-item>
+          <!-- 商品管理 -->
           <el-submenu index="2">
             <template slot="title">
               <i class="el-icon-sell"></i>
@@ -43,24 +45,27 @@
               <span>商品发布</span>
             </el-menu-item>
           </el-submenu>
+          <!-- 订单管理 -->
           <el-submenu index="3">
             <template slot="title">
               <i class="el-icon-s-order"></i>
               <span>订单管理</span>
             </template>
-            <el-menu-item index="/index/postlist">
+            <el-menu-item index="/merchants/order">
               <i class="el-icon-location"></i>
               <span>订单列表</span>
             </el-menu-item>
-            <el-menu-item index="/index/postpublish">
+            <el-menu-item index="/merchants/Service">
               <i class="el-icon-location"></i>
               <span>退货/售后</span>
             </el-menu-item>
           </el-submenu>
+          <!-- 评论管理 -->
           <el-menu-item index="/merchants/comment">
             <i class="el-icon-chat-dot-square"></i>
             <span>评论管理</span>
           </el-menu-item>
+          <!-- 设置 -->
           <el-submenu index="5">
             <template slot="title">
               <i class="el-icon-s-tools"></i>

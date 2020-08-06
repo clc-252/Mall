@@ -774,7 +774,7 @@
                 </div>
                 <div class="carousel-item">
                   <img
-                    src="https://img20.360buyimg.com/da/s590x470_jfs/t1/75377/14/13217/74808/5da7c2c3Ea77af846/6566725b91a73432.jpg.webp"
+                    src="../../assets/front/banner5.png"
                     class="d-block w-100"
                     alt="..."
                   />
@@ -983,6 +983,17 @@
         <a href="#" class="seckill_countdown" target="_blank">
           <!-- 标题 -->
           <h3>秒杀专场</h3>
+          <!-- 倒计时 -->
+          <div>
+            <div class="countdown-desc">
+              <strong>{{new Date().getHours()-1}}:00</strong>点场 倒计时
+            </div>
+            <span class="timmer countdown-main">
+              <span class="timmer__unit timmer__unit--hour">{{hr}}</span>
+              <span class="timmer__unit timmer__unit--minute">{{min}}</span>
+              <span class="timmer__unit timmer__unit--second">{{sec}}</span>
+            </span>
+          </div>
         </a>
         <!-- 秒杀商品列表 -->
         <div class="seckill_list clearfix">
@@ -1129,9 +1140,9 @@
                 </ul>
               </div>
               <!-- slot="prev" -->
-              <a class="prev" href="javascript:void(0)" slot="prev"></a>
+              <!-- <a class="prev" href="javascript:void(0)" slot="prev"></a> -->
               <!-- slot="next" -->
-              <a class="next" href="javascript:void(0)" slot="next"></a>
+              <!-- <a class="next" href="javascript:void(0)" slot="next"></a> -->
             </superslide>
           </div>
         </div>
@@ -1338,10 +1349,17 @@ import CommentHeader from '@/components/CommentHeader.vue'
 import CommentFooter from '@/components/CommentFooter.vue'
 // 引入'为你推荐'模块的组件
 import RecommendGoods from '@/components/front/RecommendGoods'
+
+// 引入获取秒杀商品的方法
+import { getSeckillGoods } from '@/apis/goods.js'
 export default {
   name: 'slideBox',
   data () {
     return {
+      day: 0,
+      hr: 0,
+      min: 0,
+      sec: 0,
       // 改变相关商品类别信息的变量
       changeDisplay: false,
       // 秒杀专场列表数据
@@ -1665,7 +1683,46 @@ export default {
   methods: {
     handleMouseover (index) {
       this.current = index
+    },
+    countdown: function () {
+      // 几点场，两个小时为一场
+      // let startTime = 0
+      // 定义结束时间戳
+      const end = Date.parse(new Date('2020-4-5 16:20:00'))
+      // 定义当前时间戳
+      const now = Date.parse(new Date())
+      // 做判断当倒计时结束时都为0
+      if (now >= end) {
+        this.day = 0
+        this.hr = 0
+        this.min = 0
+        this.sec = 0
+        return
+      }
+      // 用结束时间减去当前时间获得倒计时时间戳
+      const msec = end - now
+      let day = parseInt(msec / 1000 / 60 / 60 / 24) // 算出天数
+      let hr = parseInt((msec / 1000 / 60 / 60) % 24) // 算出小时数
+      let min = parseInt((msec / 1000 / 60) % 60) // 算出分钟数
+      let sec = parseInt((msec / 1000) % 60) // 算出秒数
+      // 给数据赋值
+      this.day = day
+      this.hr = hr > 9 ? hr : '0' + hr
+      this.min = min > 9 ? min : '0' + min
+      this.sec = sec > 9 ? sec : '0' + sec
+      // 定义this指向
+      const that = this
+      // 使用定时器 然后使用递归 让每一次函数能调用自己达到倒计时效果
+      setTimeout(function () {
+        that.countdown()
+      }, 1000)
     }
+  },
+  async mounted () {
+    let res = await getSeckillGoods()
+    console.log(res)
+    // 页面一加载就开始倒计时
+    this.countdown()
   }
 }
 </script>
@@ -1886,12 +1943,65 @@ export default {
     // background:背景颜色 背景图片地址 背景平铺 背景滚动 背景位置
     background: #e83632 url(../../assets/front/seckill_countdown_bg.png)
       no-repeat 50%;
+    color: #fff;
     h3 {
       font-size: 30px;
       font-weight: 700;
-      color: #fff;
       text-align: center;
       margin-top: 30px;
+    }
+    // 倒计时提示
+    .countdown-desc {
+      margin-top: 100px;
+      font-size: 14px;
+      text-align: center;
+      strong {
+        font-size: 18px;
+        padding-right: 2px;
+        vertical-align: middle;
+        display: inline-block;
+        margin-top: -1px;
+      }
+    }
+    // 倒计时
+    .countdown-main {
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      width: 130px;
+      height: 30px;
+      margin-top: 10px;
+      font-weight: 700;
+      .timmer__unit {
+        position: relative;
+        float: left;
+        width: 30px;
+        height: 30px;
+        line-height: 30px;
+        text-align: center;
+        background-color: #2f3430;
+        margin-right: 20px;
+        color: white;
+        font-size: 20px;
+        &::after {
+          content: ":";
+          display: block;
+          position: absolute;
+          right: -20px;
+          font-weight: bolder;
+          font-size: 18px;
+          width: 20px;
+          height: 100%;
+          top: 0;
+        }
+      }
+      .timmer__unit--second{
+        margin-right: 0;
+        &::after{
+          content:'';
+          width: 0;
+        }
+      }
     }
   }
   // 秒杀商品列表
@@ -2294,7 +2404,7 @@ export default {
             opacity: 1;
           }
         }
-        /deep/.el-carousel__indicators--outside{
+        /deep/.el-carousel__indicators--outside {
           display: none;
         }
       }

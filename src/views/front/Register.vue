@@ -58,14 +58,10 @@
             <el-form-item prop="phoneNum">
               <el-input placeholder="建议使用常用的手机号码" v-model="phone_form.phoneNum"></el-input>
             </el-form-item>
-            <el-form-item prop="captcha">
-              <el-input placeholder="请输入验证码" v-model="phone_form.captcha" class="input_captcha"></el-input>
-            </el-form-item>
-            <!-- 生成验证码 -->
-            <div class="code" @click="refreshCode">
-              <SIdentify :identifyCode="identifyCode"></SIdentify>
-              <span>看不清？点击照片换一张</span>
-            </div>
+            <!-- 输入手机验证码 -->
+            <el-input placeholder="请输入手机验证码" v-model="code" @click="handleGetCode">
+              <template slot="append">获取验证码</template>
+            </el-input>
             <el-button class="nextStep" type="primary" @click="handleNext">下&nbsp;一&nbsp;步</el-button>
           </el-form>
         </div>
@@ -80,6 +76,12 @@
           <el-input placeholder="请再次输入密码" v-model="userInfo_form.comfirmPwd">
             <template slot="prepend">确认密码</template>
           </el-input>
+          <!-- <el-input placeholder="请输入验证码" v-model="userInfo_form.captcha" class="input_captcha"></el-input> -->
+          <!-- 生成验证码 -->
+          <!-- <div class="code" @click="refreshCode">
+            <SIdentify :identifyCode="identifyCode"></SIdentify>
+            <span>看不清？点击照片换一张</span>
+          </div> -->
           <el-button class="signUp" type="primary" @click="handleSignUp">立即注册</el-button>
         </div>
         <!-- 注册成功 -->
@@ -164,7 +166,9 @@
 </template>
 
 <script>
-import SIdentify from '@/components/Identify'
+// import SIdentify from '@/components/Identify'
+// 引入获取手机验证码的方法
+import { getPhoneCode, register } from '@/apis/user.js'
 export default {
   name: 'codetest',
   data () {
@@ -189,14 +193,14 @@ export default {
       currentTab: 0,
       // 验证手机表单数据
       phone_form: {
-        phoneNum: '',
-        captcha: ''
+        phoneNum: ''
       },
       // 个人信息表单数据
       userInfo_form: {
         username: '',
         password: '',
-        comfirmPwd: ''
+        comfirmPwd: '',
+        captcha: ''
       },
       // 表单的校验规则
       rules: {
@@ -217,33 +221,62 @@ export default {
       changeLine2To3: false, // 控制步骤2 -> 步骤3之间的线
       // 验证码
       identifyCodes: '1234567890',
-      identifyCode: ''
+      identifyCode: '',
+      // 点击下一步获取到的验证码
+      code: ''
     }
   },
   methods: {
+    // 获取手机验证码
+    async handleGetCode () {
+      // 点击发送获取手机验证码的请求
+      let res = await getPhoneCode(this.phone_form.phoneNum)
+      console.log(res)
+    },
     // 下一步
     handleNext () {
-      if (this.phone_form.captcha === this.identifyCode) {
-        window.$('.container_info').show()
-        window.$('.container_phone').hide()
-        window.$('.register_success').hide()
-        this.changePosition = true
-        this.changeLine = true
-        this.chhangeBgp = true
-      } else {
-        this.$message.error('验证码错误')
-        this.refreshCode()
-      }
+      window.$('.container_info').show()
+      window.$('.container_phone').hide()
+      window.$('.register_success').hide()
+      this.changePosition = true
+      this.changeLine = true
+      this.chhangeBgp = true
+      // if (this.code) {
+      //   window.$('.container_info').show()
+      //   window.$('.container_phone').hide()
+      //   window.$('.register_success').hide()
+      //   this.changePosition = true
+      //   this.changeLine = true
+      //   this.chhangeBgp = true
+      // } else {
+      //   this.$message.error('请输入验证码')
+      //   this.refreshCode()
+      // }
     },
     // 处理注册事件
-    handleSignUp () {
-      // 注册成功的内容显示，其他内容隐藏
-      window.$('.register_success').show()
-      window.$('.container_info').hide()
-      // 修改改变样式的变量
-      this.changePosition2To3 = true
-      this.changeLine2To3 = true
-      this.chhangeBgp = false
+    async handleSignUp () {
+      // 将密码进行加密
+      let password = this.$md5(this.userInfo_form.password)
+      if (this.phone_form.captcha === this.identifyCode) {
+        // 发送注册请求
+        let res = await register(this.phone_form.phoneNum, password, this.code)
+        // 如果注册成功，则显示注册成功提示内容
+        if (res.status === 200) {
+        // 注册成功
+        // 注册成功的内容显示，其他内容隐藏
+          window.$('.register_success').show()
+          window.$('.container_info').hide()
+          // 修改改变样式的变量
+          this.changePosition2To3 = true
+          this.changeLine2To3 = true
+          this.chhangeBgp = false
+        } else {
+        // 否则，提示用户注册失败
+          this.$message.error('注册失败，请重试')
+        }
+      } else {
+        this.$message.error('验证码错误')
+      }
     },
     // 验证码 - 生成随机数字
     randomNum (min, max) {
@@ -256,7 +289,7 @@ export default {
     },
     makeCode (o, l) {
       for (let i = 0; i < l; i++) {
-        this.identifyCode += this.identifyCodes[this.randomNum(0, this.identifyCodes.length)]
+        this.identifyCode += this.identifyCodes[ this.randomNum(0, this.identifyCodes.length) ]
       }
       // 验证码
       console.log(this.identifyCode)
@@ -272,10 +305,10 @@ export default {
     setInterval(() => {
       window.$('.el-icon-thumb').toggleClass('iconActive')
     }, 1000)
-  },
-  components: {
-    SIdentify
   }
+  // components: {
+  //   SIdentify
+  // }
 }
 </script>
 
@@ -378,14 +411,13 @@ export default {
     // display: none;
     margin-top: 50px;
     .code {
-      margin-top: -12px;
       margin-bottom: 5px;
       display: flex;
       align-items: flex-end;
-      .s-canvas{
+      .s-canvas {
         vertical-align: middle;
       }
-      span{
+      span {
         margin-left: 10px;
       }
     }
@@ -428,18 +460,18 @@ export default {
       }
     }
     // 去登录
-    .to_login{
+    .to_login {
       float: right;
       margin-top: 50px;
-      .el-icon-thumb{
+      .el-icon-thumb {
         transform: rotate(90deg);
         font-size: 20px;
-        &.iconActive{
+        &.iconActive {
           color: #e4393c;
           font-size: 22px;
         }
       }
-      a{
+      a {
         margin-left: 10px;
         font-size: 16px;
       }

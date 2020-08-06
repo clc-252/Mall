@@ -20,8 +20,28 @@ import 'bootstrap/dist/css/bootstrap.css'
 // 全局引入jquery
 import jquery from 'jquery'
 
+// 全局使用v-distpicker地区选择插件
+import VDistpicker from 'v-distpicker'
+
+// MD5加密
+import md5 from 'js-md5'
+
+// 使用vuex
+import store from './store/index.js'
+
 // vue中生成验证码的插件 — identify
 import SIdentify from './components/Identify'
+
+// 时间格式化插件
+import moment from 'moment'
+
+// echarts
+import echarts from 'echarts'
+Vue.prototype.$moment = moment
+Vue.prototype.$echarts = echarts
+
+Vue.prototype.$md5 = md5
+Vue.component('v-distpicker', VDistpicker)
 window.jquery = window.$ = jquery
 Vue.use(SIdentify)
 
@@ -39,5 +59,6 @@ router.beforeEach((to, from, next) => {
 
 new Vue({
   router,
+  store,
   render: h => h(App)
 }).$mount('#app')
